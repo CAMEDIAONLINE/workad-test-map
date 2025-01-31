@@ -851,12 +851,12 @@
         {
          "name":"mapCopyright",
          "type":"string",
-         "value":"Credits: WorkAdventure (https:\/\/WorkAdventu.re) \nLicense: CC-BY-SA 3.0 (http:\/\/creativecommons.org\/licenses\/by-sa\/3.0\/)"
+         "value":"CAMEDIA GmbH"
         }, 
         {
          "name":"mapDescription",
          "type":"string",
-         "value":"A perfect virtual office to get started with WorkAdventure!"
+         "value":"Dies ist unserer erste CAMEDIA Workadventure Map f\u00fcr das Remote Office.\n\n- v1\n- 31.02.2025"
         }, 
         {
          "name":"mapImage",
@@ -864,9 +864,14 @@
          "value":"office.png"
         }, 
         {
+         "name":"mapLink",
+         "type":"string",
+         "value":"https:\/\/github.com\/CAMEDIAONLINE\/workad-test-map"
+        }, 
+        {
          "name":"mapName",
          "type":"string",
-         "value":"Office"
+         "value":"CAMEDIA Virtual Office"
         }, 
         {
          "name":"script",
