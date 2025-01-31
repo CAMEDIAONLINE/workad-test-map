@@ -584,6 +584,11 @@
                          "value":"meeting-room-1"
                         }, 
                         {
+                         "name":"jitsiTrigger",
+                         "type":"string",
+                         "value":"onenter"
+                        }, 
+                        {
                          "name":"openWebsiteClosable",
                          "type":"string",
                          "value":"false"
@@ -614,6 +619,11 @@
                          "name":"jitsiRoom",
                          "type":"string",
                          "value":"meeting-room-2"
+                        }, 
+                        {
+                         "name":"jitsiTrigger",
+                         "type":"string",
+                         "value":"onenter"
                         }, 
                         {
                          "name":"openWebsiteClosable",
@@ -655,7 +665,7 @@
                         {
                          "name":"jitsiTrigger",
                          "type":"string",
-                         "value":"onaction"
+                         "value":"onenter"
                         }, 
                         {
                          "name":"openWebsiteClosable",
@@ -690,6 +700,11 @@
                          "value":"meeting-room-4"
                         }, 
                         {
+                         "name":"jitsiTrigger",
+                         "type":"string",
+                         "value":"onenter"
+                        }, 
+                        {
                          "name":"openWebsiteClosable",
                          "type":"string",
                          "value":"false"
@@ -722,6 +737,11 @@
                          "value":"meeting-room-5"
                         }, 
                         {
+                         "name":"jitsiTrigger",
+                         "type":"string",
+                         "value":"onenter"
+                        }, 
+                        {
                          "name":"openWebsiteClosable",
                          "type":"string",
                          "value":"false"
@@ -752,6 +772,11 @@
                          "name":"jitsiRoom",
                          "type":"string",
                          "value":"meeting-room-6"
+                        }, 
+                        {
+                         "name":"jitsiTrigger",
+                         "type":"string",
+                         "value":"onenter"
                         }, 
                         {
                          "name":"openWebsiteClosable",
