@@ -837,6 +837,28 @@
                  "width":34.2727272727272,
                  "x":415.484848484849,
                  "y":29.3333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":26,
+                 "name":"jitsiSwitch",
+                 "properties":[
+                        {
+                         "name":"action",
+                         "type":"string",
+                         "value":"script"
+                        }, 
+                        {
+                         "name":"script",
+                         "type":"string",
+                         "value":"toggleConference()"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":830.666666666667,
+                 "y":61.3333333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -844,10 +866,15 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":69,
- "nextobjectid":26,
+ "nextlayerid":70,
+ "nextobjectid":32,
  "orientation":"orthogonal",
  "properties":[
+        {
+         "name":"keyP",
+         "type":"string",
+         "value":"toggleConference()"
+        }, 
         {
          "name":"mapCopyright",
          "type":"string",
