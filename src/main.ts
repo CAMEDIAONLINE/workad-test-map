@@ -33,6 +33,11 @@ WA.onInit().then(async () => {
 
     console.log(`Jitsi-Raumname: ${jitsiRoomName}`);
 
+
+    // Sicherstellen, dass das Dokument den Fokus hat
+    document.body.setAttribute("tabindex", "0");
+    document.body.focus();
+
     // Registriere das Tastendruck-Ereignis
     window.addEventListener('keydown', (event) => {
         if (event.code === "KeyJ") {
@@ -40,7 +45,10 @@ WA.onInit().then(async () => {
         }
     });
 
-    // Event-Listener für automatisches Öffnen beim Betreten eines Bereichs
+
+
+
+    // Event-Listener für automatisches Öffnen beim Betreten eines Bereichs    
     WA.room.area.onEnter(jitsiRoomName).subscribe(() => {
         openJitsiModal();
     });
@@ -60,7 +68,7 @@ function openJitsiModal() {
 
     WA.ui.modal.openModal({
         title: 'Jitsi-Konferenz',
-        src: `https://jitsi.camedia.tools/${{ jitsiRoomName }}`, // Jitsi-Raum ersetzen
+        src: `https://jitsi.camedia.tools/${jitsiRoomName}`, // Jitsi-Raum ersetzen
         allow: 'camera; microphone; fullscreen; display-capture',
         allowApi: true,
         position: 'right'

@@ -800,6 +800,11 @@
                  "name":"conference-room",
                  "properties":[
                         {
+                         "name":"customScript",
+                         "type":"string",
+                         "value":"openJitsiModal()"
+                        }, 
+                        {
                          "name":"focusable",
                          "type":"bool",
                          "value":true
@@ -808,11 +813,6 @@
                          "name":"jitsiRoom",
                          "type":"string",
                          "value":"conference-room"
-                        }, 
-                        {
-                         "name":"onClick",
-                         "type":"bool",
-                         "value":true
                         }, 
                         {
                          "name":"onEnter",
