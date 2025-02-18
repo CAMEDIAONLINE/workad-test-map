@@ -34,10 +34,10 @@ WA.onInit().then(() => {
     }).catch(e => console.error(e));
 
     // Keybinding aus der Tilemap lesen
-    const pauseKey = WA.room.properties.keyP || "KeyP";
+    const pauseKey = WA.room.getProperty("keyP") || "KeyP";
 
     // Event für Tastendruck registrieren (P-Taste)
-    WA.input.onKeyDown(pauseKey, () => {
+    WA.controls.onKeyDown(pauseKey, () => {
         toggleConference();
     });
 
@@ -53,24 +53,27 @@ function closePopup() {
 }
 
 function toggleConference() {
-    if (!WA.room.jitsiConference) {
+    if (!WA.room.getConference()) {
         console.warn("Jitsi-Konferenz nicht aktiv.");
         return;
     }
 
+
     if (conferencePaused) {
-        WA.room.jitsiConference.join();
+        WA.room.getConference()?.join();
         conferencePaused = false;
         WA.ui.displayActionMessage({
             message: "Du bist wieder in der Konferenz!",
-            type: "info"
+            type: "message",
+            callback: () => { }
         });
     } else {
-        WA.room.jitsiConference.leave();
+        WA.room.getConference()?.leave();
         conferencePaused = true;
         WA.ui.displayActionMessage({
             message: "Konferenz pausiert. Drücke P, um wieder beizutreten.",
-            type: "warning"
+            type: "warning",
+            callback: () => { }
         });
     }
 }
