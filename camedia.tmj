@@ -558,17 +558,6 @@
          "name":"floorLayer",
          "objects":[
                 {
-                 "height":61.6672851518306,
-                 "id":12,
-                 "name":"clockPopup",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":93.7162209047986,
-                 "x":387.252658731954,
-                 "y":63.3602449804649
-                }, 
-                {
                  "height":224,
                  "id":13,
                  "name":"jitsiMeetingRoom1",
@@ -645,8 +634,13 @@
                 {
                  "height":224,
                  "id":21,
-                 "name":"jitsiMeetingRoom3",
+                 "name":"meeting-room-3",
                  "properties":[
+                        {
+                         "name":"customScript",
+                         "type":"string",
+                         "value":"openJitsiModal()"
+                        }, 
                         {
                          "name":"focusable",
                          "type":"bool",
@@ -663,9 +657,14 @@
                          "value":"meeting-room-3"
                         }, 
                         {
-                         "name":"jitsiTrigger",
-                         "type":"string",
-                         "value":"onenter"
+                         "name":"onClick",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"onEnter",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"openWebsiteClosable",
@@ -826,39 +825,6 @@
                  "width":768,
                  "x":256,
                  "y":96
-                }, 
-                {
-                 "height":33.6969696969697,
-                 "id":17,
-                 "name":"clock",
-                 "rotation":0,
-                 "type":"area",
-                 "visible":true,
-                 "width":34.2727272727272,
-                 "x":415.484848484849,
-                 "y":29.3333333333333
-                }, 
-                {
-                 "height":0,
-                 "id":26,
-                 "name":"jitsiSwitch",
-                 "properties":[
-                        {
-                         "name":"action",
-                         "type":"string",
-                         "value":"script"
-                        }, 
-                        {
-                         "name":"script",
-                         "type":"string",
-                         "value":"toggleConference()"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":830.666666666667,
-                 "y":61.3333333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
