@@ -1,7 +1,6 @@
 /// <reference types="@workadventure/iframe-api-typings" />
 
 // Imports
-import { WA } from "@workadventure/iframe-api";
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 
 
@@ -54,6 +53,11 @@ function closePopup() {
 }
 
 function toggleConference() {
+    if (!WA.room.jitsiConference) {
+        console.warn("Jitsi-Konferenz nicht aktiv.");
+        return;
+    }
+
     if (conferencePaused) {
         WA.room.jitsiConference.join();
         conferencePaused = false;
