@@ -1,7 +1,8 @@
 /// <reference types="@workadventure/iframe-api-typings" />
 
+
 // Imports
-import { bootstrapExtra } from "@workadventure/scripting-api-extra";
+import { bootstrapExtra, Properties } from "@workadventure/scripting-api-extra";
 
 
 console.log('Script started successfully');
@@ -48,8 +49,8 @@ WA.onInit().then(async () => {
 
 function toggleConference() {
     if (conferencePaused) {
-        WA.video.show();
-        WA.video.unmute();
+        WA.controls.restoreWebcam();
+        WA.controls.restoreMicrophone();
         conferencePaused = false;
         WA.ui.displayActionMessage({
             message: "Du bist wieder in der Konferenz!",
@@ -57,8 +58,8 @@ function toggleConference() {
             callback: () => { }
         });
     } else {
-        WA.video.hide();
-        WA.video.mute();
+        WA.controls.disableWebcam();
+        WA.controls.disableMicrophone();
         conferencePaused = true;
         WA.ui.displayActionMessage({
             message: "Konferenz pausiert. Drücke P, um wieder beizutreten.",
