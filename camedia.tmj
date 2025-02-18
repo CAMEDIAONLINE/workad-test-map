@@ -797,7 +797,7 @@
                 {
                  "height":672,
                  "id":16,
-                 "name":"jitsiConferenceRoom",
+                 "name":"conference-room",
                  "properties":[
                         {
                          "name":"focusable",
@@ -810,9 +810,14 @@
                          "value":"conference-room"
                         }, 
                         {
-                         "name":"jitsiTrigger",
-                         "type":"string",
-                         "value":"onenter"
+                         "name":"onClick",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"onEnter",
+                         "type":"bool",
+                         "value":true
                         }, 
                         {
                          "name":"zoom_margin",
