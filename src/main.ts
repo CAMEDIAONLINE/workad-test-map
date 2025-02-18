@@ -63,10 +63,7 @@ function openJitsiModal() {
         src: `https://jitsi.camedia.tools/${{ jitsiRoomName }}`, // Jitsi-Raum ersetzen
         allow: 'camera; microphone; fullscreen; display-capture',
         allowApi: true,
-        position: 'right',
-        closeCallback: () => {
-            console.log('Konferenz geschlossen');
-        }
+        position: 'right'
     });
 }
 
