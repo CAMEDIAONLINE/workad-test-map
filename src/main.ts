@@ -38,16 +38,11 @@ WA.onInit().then(async () => {
     document.body.setAttribute("tabindex", "0");
     document.body.focus();
 
-    // Registriere das Tastendruck-Ereignis
-    window.addEventListener('keydown', (event) => {
-        if (event.code === "KeyJ") {
-            openJitsiModal();
-        }
-    });
+
 
 
     // Event-Listener für automatisches Öffnen beim Betreten eines Bereichs    
-    WA.room.area.onEnter(jitsiRoomName).subscribe(() => {
+    WA.room.area.onEnter('conference-room').subscribe(() => {
         openJitsiModal();
     });
 
