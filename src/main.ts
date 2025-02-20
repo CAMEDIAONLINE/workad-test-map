@@ -43,6 +43,7 @@ WA.onInit().then(async () => {
 
     // Event-Listener für automatisches Öffnen beim Betreten eines Bereichs    
     WA.room.area.onEnter('conference-room').subscribe(() => {
+        console.log("Open Jitsi Modal: conference Room")
         openJitsiModal();
     });
 
