@@ -24,14 +24,14 @@ WA.onInit().then(async () => {
     }).catch(e => console.error(e));
 
     // Map-Eigenschaften abrufen
-    const map = await WA.room.getTiledMap();
-    const mapProperties = new Properties(map.properties);
+    //const map = await WA.room.getTiledMap();
+    //const mapProperties = new Properties(map.properties);
 
     // Properties aus der Karte lesen
-    jitsiRoomName = mapProperties.getString('jitsiRoom') || "";
+    //jitsiRoomName = mapProperties.getString('jitsiRoom') || "";
 
 
-    console.log(`Jitsi-Raumname: ${jitsiRoomName}`);
+    //console.log(`Jitsi-Raumname: ${jitsiRoomName}`);
 
 
     // Sicherstellen, dass das Dokument den Fokus hat
@@ -43,9 +43,13 @@ WA.onInit().then(async () => {
 
     // Event-Listener für automatisches Öffnen beim Betreten eines Bereichs    
     WA.room.area.onEnter('conference-room').subscribe(() => {
+        jitsiRoomName = 'conference-room'
         console.log("Open Jitsi Modal: conference Room")
         openJitsiModal();
+        addJitsiButton();
     });
+
+
 
 }).catch(e => console.error(e));
 
@@ -67,6 +71,26 @@ function openJitsiModal() {
         allowApi: true,
         position: 'right'
     });
+}
+
+
+function addJitsiButton() {
+
+    // Add action bar button 'Join Meeting'.
+    WA.ui.actionBar.addButton({
+        id: 'rejoin-meeting',
+        label: 'Meeting beitreten',
+        callback: (event) => {
+            console.log(`Rejoined meeting: ${jitsiRoomName}`, event);
+
+            // Open Jitsi 
+            openJitsiModal()
+
+            // Remove button
+            WA.ui.actionBar.removeButton('rejoin-meeting');
+        }
+    });
+
 }
 
 export { };
