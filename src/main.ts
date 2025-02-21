@@ -78,13 +78,13 @@ WA.onInit().then(async () => {
                 setTimeout(() => {
                     isClosingModal = false;
                     openJitsiModal(currentArea);
-                    currentActiveArea = currentArea; // Jetzt erst setzen
+                    currentActiveArea = currentArea.id; // Jetzt erst setzen
                 }, 300); // 300ms Wartezeit, kann bei Bedarf angepasst werden
 
             } else {
                 // Direkt die neue Konferenz öffnen, wenn keine vorherige aktiv war
                 openJitsiModal(currentArea);
-                currentActiveArea = currentArea;
+                currentActiveArea = currentArea.id;
             }
 
 
