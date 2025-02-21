@@ -5,15 +5,41 @@ import {
     bootstrapExtra
 } from "@workadventure/scripting-api-extra";
 
+type TArea = {
+    id: string;
+    label: string;
+}
+
 // CONSTS & VARIABLES
-const areas = [
-    'conference-room',
-    'meeting-room-1',
-    'meeting-room-2',
-    'meeting-room-3',
-    'meeting-room-4',
-    'meeting-room-5',
-    'meeting-room-6',
+const areas: TArea[] = [
+    {
+        id: 'conference-room',
+        label: 'CAMEDIA TEAM'
+    },
+    {
+        id: 'meeting-room-1',
+        label: 'Larry Page'
+    },
+    {
+        id: 'meeting-room-2',
+        label: 'Steve Jobs'
+    },
+    {
+        id: 'meeting-room-3',
+        label: 'Roger Moore'
+    },
+    {
+        id: 'meeting-room-4',
+        label: 'Jimmy Page'
+    },
+    {
+        id: 'meeting-room-5',
+        label: 'Bill Gates'
+    },
+    {
+        id: 'meeting-room-6',
+        label: 'Philipp Erich'
+    }
 ]
 
 let currentActiveArea: string | null = null; // Speichert die aktuelle Area
@@ -36,11 +62,11 @@ WA.onInit().then(async () => {
 
     for (const currentArea of areas) {
         // Event-Listener für automatisches Öffnen beim Betreten eines Bereichs    
-        WA.room.area.onEnter(currentArea).subscribe(async () => {
+        WA.room.area.onEnter(currentArea.id).subscribe(async () => {
             console.log("Open Jitsi Modal: ", currentArea)
 
             // Falls bereits eine Konferenz offen ist -> erst schließen
-            if (currentActiveArea && currentActiveArea !== currentArea) {
+            if (currentActiveArea && currentActiveArea !== currentArea.id) {
                 console.log(`Schließe vorherige Konferenz: ${currentActiveArea}`);
                 WA.ui.actionBar.removeButton(`disconnect-${currentActiveArea}`); // Alten Button entfernen
                 WA.ui.actionBar.removeButton(`connect-${currentActiveArea}`); // Alten Button entfernen
@@ -72,7 +98,7 @@ WA.onInit().then(async () => {
 // FUNCTIONS
 
 // Funktion zum Öffnen des modalen Jitsi-Fensters
-async function openJitsiModal(currentArea: String) {
+async function openJitsiModal(currentArea: TArea) {
     if (!currentArea) {
         console.error("Kein Jitsi-Raumname vergeben!");
         return;
@@ -85,17 +111,17 @@ async function openJitsiModal(currentArea: String) {
     }
 
     // Öffne Modal
-    await WA.ui.modal.openModal({
-        title: `Konferenz ${currentArea}`,
-        src: `https://jitsi.camedia.tools/${currentArea}`, // Jitsi-Raum ersetzen
+    WA.ui.modal.openModal({
+        title: `Konferenz ${currentArea.label}`,
+        src: `https://jitsi.camedia.tools/${currentArea.id}`, // Jitsi-Raum ersetzen
         allow: 'camera; microphone; fullscreen; display-capture',
         allowApi: true,
         position: 'right',
     }, async () => {
-        console.log(`Modal für ${currentArea} wurde geschlossen.`);
+        console.log(`Modal für ${currentArea.id} wurde geschlossen.`);
 
         // Entferne Disconnect-Button, wenn das Modal manuell geschlossen wurde
-        WA.ui.actionBar.removeButton(`disconnect-${currentArea}`);
+        WA.ui.actionBar.removeButton(`disconnect-${currentArea.id}`);
 
         // Connect-Button wieder hinzufügen
         addJitsiConnectButton(currentArea);
@@ -108,14 +134,14 @@ async function openJitsiModal(currentArea: String) {
 }
 
 
-async function addJitsiConnectButton(currentArea: String) {
+async function addJitsiConnectButton(currentArea: TArea) {
 
     // Add action bar button 'Join Meeting'.
-    const button_id = `connect-${currentArea}`
+    const button_id = `connect-${currentArea.id}`
 
     await WA.ui.actionBar.addButton({
         id: button_id,
-        label: `${currentArea} beitreten`,
+        label: `${currentArea.label} beitreten`,
         callback: async (event) => {
             console.log(`Connected to meeting: ${currentArea}`, event);
 
@@ -129,14 +155,14 @@ async function addJitsiConnectButton(currentArea: String) {
 
 }
 
-async function addJitsiDisconnectButton(currentArea: String) {
+async function addJitsiDisconnectButton(currentArea: TArea) {
 
     // Add action bar button 'Join Meeting'.
-    const button_id = `disconnect-${currentArea}`
+    const button_id = `disconnect-${currentArea.id}`
 
-    await WA.ui.actionBar.addButton({
+    WA.ui.actionBar.addButton({
         id: button_id,
-        label: `${currentArea} austreten`,
+        label: `${currentArea.label} austreten`,
         callback: async (event) => {
             console.log(`disconnected from meeting: ${currentArea}`, event);
 
