@@ -43,7 +43,9 @@ const areas: TArea[] = [
 ]
 
 let currentActiveArea: string | null = null; // Speichert die aktuelle Area
+let waitToEnterArea: TArea | null;
 let isClosingModal: boolean = false; // Statusvariable für das Schließen
+
 
 console.log('Script started successfully');
 
@@ -63,19 +65,20 @@ WA.onInit().then(async () => {
     for (const currentArea of areas) {
         // Event-Listener für automatisches Öffnen beim Betreten eines Bereichs    
         WA.room.area.onEnter(currentArea.id).subscribe(async () => {
-            console.log("Open Jitsi Modal: ", currentArea)
 
-            while (currentActiveArea && currentActiveArea === currentArea.id) {
-                console.log("waiting until currentActiveArea is free: ", currentActiveArea);
-            }
+            waitToEnterArea = currentArea;
 
-            // Die  Konferenz öffnen, sobald die alte geschlossen wurde
-            openJitsiModal(currentArea);
-            currentActiveArea = currentArea.id;
-        });
+            if (currentActiveArea && currentActiveArea !== currentArea.id) {
+                console.log("Aktuelle Aktive Area: ", currentActiveArea);
+                console.log("OnEnterArea: ", currentArea.id);
+
+                // Die  Konferenz öffnen
+                openJitsiModal(currentArea);
+                currentActiveArea = currentArea.id;
+            });
 
         WA.room.area.onLeave(currentArea.id).subscribe(async () => {
-            console.log(`Schließe Konferenz bei verlassen: ${currentActiveArea}`);
+            console.log(`Schließe Konferenz bei verlassen: ${currentArea.id}`);
             isClosingModal = true;
             WA.ui.modal.closeModal(); // Altes Modal schließen
 
@@ -89,6 +92,10 @@ WA.onInit().then(async () => {
                 currentActiveArea = null;
             }, 300); // 300ms Wartezeit, kann bei Bedarf angepasst werden
 
+            if (waitToEnterArea) {
+                console.log("Process waitToEnterArea: ", waitToEnterArea.id)
+                openJitsiModal(waitToEnterArea)
+            }
         });
     }
 
@@ -131,7 +138,7 @@ async function openJitsiModal(currentArea: TArea) {
     // Füge Disconnect Button hinzu
     addJitsiDisconnectButton(currentArea);
 
-
+    waitToEnterArea = null;
 }
 
 
