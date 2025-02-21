@@ -30,6 +30,10 @@ WA.onInit().then(async () => {
     const map = await WA.room.getTiledMap();
     const mapProperties = new Properties(map.properties);
 
+    console.log('map: ', map)
+    console.log('map.properties: ', map.properties)
+
+
     // getOne fetches the value of the property passed in parameter.
     const object_name = mapProperties.get('Name') as string;
     const room_name = mapProperties.get('room') as string;
