@@ -16,8 +16,7 @@ const areas = [
     'meeting-room-6',
 ]
 
-
-
+let currentActiveArea: string | null = null; // Speichert die aktuelle Area
 
 
 console.log('Script started successfully');
@@ -42,7 +41,18 @@ WA.onInit().then(async () => {
         WA.room.area.onEnter(currentArea).subscribe(() => {
             console.log("Open Jitsi Modal: ", currentArea)
 
+            // Falls bereits eine Konferenz offen ist -> erst schließen
+            if (currentActiveArea) {
+                console.log(`Schließe vorherige Konferenz: ${currentActiveArea}`);
+                WA.ui.modal.closeModal(); // Altes Modal schließen
+                WA.ui.actionBar.removeButton(`disconnect-${currentActiveArea}`); // Alten Button entfernen
+                WA.ui.actionBar.removeButton(`connect-${currentActiveArea}`); // Alten Button entfernen
+            }
+
             openJitsiModal(currentArea);
+
+            // Setze die aktuelle Area
+            currentActiveArea = currentArea;
         });
     }
 
@@ -78,6 +88,8 @@ function openJitsiModal(currentArea: String) {
 
     // Füge Disconnect Button hinzu
     addJitsiDisconnectButton(currentArea);
+
+
 }
 
 
