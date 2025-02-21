@@ -71,22 +71,23 @@ WA.onInit().then(async () => {
                 WA.ui.actionBar.removeButton(`disconnect-${currentActiveArea}`); // Alten Button entfernen
                 WA.ui.actionBar.removeButton(`connect-${currentActiveArea}`); // Alten Button entfernen
 
-                isClosingModal = true;
-                WA.ui.modal.closeModal(); // Altes Modal schließen                
-
-                // Warte kurz (weil closeModal nicht asynchron ist), bevor das neue Modal geöffnet wird
-                setTimeout(() => {
-                    isClosingModal = false;
-                    openJitsiModal(currentArea);
-                    currentActiveArea = currentArea.id; // Jetzt erst setzen
-                }, 300); // 300ms Wartezeit, kann bei Bedarf angepasst werden
-
             } else {
                 // Direkt die neue Konferenz öffnen, wenn keine vorherige aktiv war
                 openJitsiModal(currentArea);
                 currentActiveArea = currentArea.id;
             }
 
+        });
+
+        WA.room.area.onLeave(currentArea.id).subscribe(async () => {
+            isClosingModal = true;
+            WA.ui.modal.closeModal(); // Altes Modal schließen
+
+            // Warte kurz (weil closeModal nicht asynchron ist), bevor das neue Modal geöffnet wird
+            setTimeout(() => {
+                isClosingModal = false;
+                currentActiveArea = null;
+            }, 300); // 300ms Wartezeit, kann bei Bedarf angepasst werden
 
         });
     }
