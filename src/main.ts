@@ -3,8 +3,8 @@
 
 // Imports
 import {
-    bootstrapExtra
-    // , Properties
+    bootstrapExtra,
+    Properties
 } from "@workadventure/scripting-api-extra";
 
 
@@ -27,21 +27,16 @@ WA.onInit().then(async () => {
     }).catch(e => console.error(e));
 
     // Map-Eigenschaften abrufen
-    //const map = await WA.room.getTiledMap();
-    //const mapProperties = new Properties(map.properties);
+    const map = await WA.room.getTiledMap();
+    const mapProperties = new Properties(map.properties);
 
-    // Properties aus der Karte lesen
-    //jitsiRoomName = mapProperties.getString('jitsiRoom') || "";
-
-
-    //console.log(`Jitsi-Raumname: ${jitsiRoomName}`);
+    // getOne fetches the value of the property passed in parameter.
+    const object_name = mapProperties.get('Name') as string;
+    const room_name = mapProperties.get('room') as string;
 
 
-    // Sicherstellen, dass das Dokument den Fokus hat
-    document.body.setAttribute("tabindex", "0");
-    document.body.focus();
-
-
+    console.log(`Objektname: ${object_name}`);
+    console.log(`Raumname: ${room_name}`);
 
 
     // Event-Listener für automatisches Öffnen beim Betreten eines Bereichs    

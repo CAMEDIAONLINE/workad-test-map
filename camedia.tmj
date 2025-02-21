@@ -805,7 +805,7 @@
                          "value":true
                         }, 
                         {
-                         "name":"jitsiRoom",
+                         "name":"room",
                          "type":"string",
                          "value":"conference-room"
                         }, 
