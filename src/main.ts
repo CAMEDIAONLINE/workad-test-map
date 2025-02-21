@@ -75,7 +75,8 @@ WA.onInit().then(async () => {
                 // Die  Konferenz öffnen
                 openJitsiModal(currentArea);
                 currentActiveArea = currentArea.id;
-            });
+            }
+        });
 
         WA.room.area.onLeave(currentArea.id).subscribe(async () => {
             console.log(`Schließe Konferenz bei verlassen: ${currentArea.id}`);
