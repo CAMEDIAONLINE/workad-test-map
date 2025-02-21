@@ -68,9 +68,12 @@ WA.onInit().then(async () => {
 
             waitToEnterArea = currentArea;
 
+            console.log("Aktuelle Aktive Area: ", currentActiveArea);
+            console.log("OnEnterArea: ", currentArea.id);
+
             if (currentActiveArea && currentActiveArea !== currentArea.id) {
-                console.log("Aktuelle Aktive Area: ", currentActiveArea);
-                console.log("OnEnterArea: ", currentArea.id);
+                console.log("OnEnter - inside if");
+
 
                 // Die  Konferenz öffnen
                 openJitsiModal(currentArea);
