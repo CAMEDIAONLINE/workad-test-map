@@ -1,18 +1,27 @@
 /// <reference types="@workadventure/iframe-api-typings" />
 
-
 // Imports
 import {
     bootstrapExtra,
     Properties
 } from "@workadventure/scripting-api-extra";
 
+// CONSTS & VARIABLES
+const areas = [
+    'conference-room',
+    'meeting-room-1',
+    'meeting-room-2',
+    'meeting-room-3',
+    'meeting-room-4',
+    'meeting-room-5',
+    'meeting-room-6',
+]
+
+
+
+
 
 console.log('Script started successfully');
-
-
-// VARIABLES
-let jitsiRoomName = "";
 
 
 
@@ -26,31 +35,18 @@ WA.onInit().then(async () => {
         console.log('Scripting API Extra ready');
     }).catch(e => console.error(e));
 
-    // Map-Eigenschaften abrufen
-    const map = await WA.room.getTiledMap();
-    const mapProperties = new Properties(map.properties);
 
-    console.log('map: ', map)
-    console.log('map.properties: ', map.properties)
+    for (let i = 0; i < areas.length; i++) {
+        const currentArea = areas[i];
 
+        // Event-Listener für automatisches Öffnen beim Betreten eines Bereichs    
+        WA.room.area.onEnter(currentArea).subscribe(() => {
+            console.log("Open Jitsi Modal: ", currentArea)
 
-    // getOne fetches the value of the property passed in parameter.
-    const object_name = mapProperties.get('Name') as string;
-    const room_name = mapProperties.get('room') as string;
-
-
-    console.log(`Objektname: ${object_name}`);
-    console.log(`Raumname: ${room_name}`);
-
-
-    // Event-Listener für automatisches Öffnen beim Betreten eines Bereichs    
-    WA.room.area.onEnter('conference-room').subscribe(() => {
-        jitsiRoomName = 'conference-room'
-        console.log("Open Jitsi Modal: conference Room")
-        openJitsiModal();
-        addJitsiButton();
-    });
-
+            openJitsiModal(currentArea);
+            addJitsiDisconnectButton(currentArea);
+        });
+    }
 
 
 }).catch(e => console.error(e));
@@ -59,16 +55,16 @@ WA.onInit().then(async () => {
 // FUNCTIONS
 
 // Funktion zum Öffnen des modalen Jitsi-Fensters
-function openJitsiModal() {
-    if (!jitsiRoomName) {
-        console.error("Kein Jitsi-Raumname gefunden!");
+function openJitsiModal(currentArea: String) {
+    if (!currentArea) {
+        console.error("Kein Jitsi-Raumname vergeben!");
         return;
     }
 
 
     WA.ui.modal.openModal({
-        title: 'Jitsi-Konferenz',
-        src: `https://jitsi.camedia.tools/${jitsiRoomName}`, // Jitsi-Raum ersetzen
+        title: `Konferenz ${currentArea}`,
+        src: `https://jitsi.camedia.tools/${currentArea}`, // Jitsi-Raum ersetzen
         allow: 'camera; microphone; fullscreen; display-capture',
         allowApi: true,
         position: 'right'
@@ -76,24 +72,55 @@ function openJitsiModal() {
 }
 
 
-function addJitsiButton() {
+function addJitsiConnectButton(currentArea: String) {
 
     // Add action bar button 'Join Meeting'.
-    WA.ui.actionBar.addButton({
-        id: 'rejoin-meeting',
-        label: 'Meeting beitreten',
-        callback: (event) => {
-            console.log(`Rejoined meeting: ${jitsiRoomName}`, event);
+    const button_id = `connect-${currentArea}`
 
-            // Open Jitsi 
-            openJitsiModal()
+    WA.ui.actionBar.addButton({
+        id: button_id,
+        label: `${currentArea} beitreten`,
+        callback: (event) => {
+            console.log(`Connected to meeting: ${currentArea}`, event);
+
+            // Open Modal 
+            openJitsiModal(currentArea)
 
             // Remove button
-            WA.ui.actionBar.removeButton('rejoin-meeting');
+            WA.ui.actionBar.removeButton(button_id);
+
+            // Add Disconnect Button
+            addJitsiDisconnectButton(currentArea)
+
         }
     });
 
 }
+
+function addJitsiDisconnectButton(currentArea: String) {
+
+    // Add action bar button 'Join Meeting'.
+    const button_id = `disconnect-${currentArea}`
+
+    WA.ui.actionBar.addButton({
+        id: button_id,
+        label: `${currentArea} austreten`,
+        callback: (event) => {
+            console.log(`disconnected from meeting: ${currentArea}`, event);
+
+            // Close Modal
+            WA.ui.modal.closeModal();
+
+            // Remove Disconnect Button
+            WA.ui.actionBar.removeButton(button_id);
+
+            // Add Connect Button
+            addJitsiConnectButton(currentArea)
+        }
+    });
+
+}
+
 
 export { };
 
