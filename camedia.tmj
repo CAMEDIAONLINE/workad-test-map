@@ -568,19 +568,9 @@
                          "value":true
                         }, 
                         {
-                         "name":"jitsiRoom",
-                         "type":"string",
-                         "value":"meeting-room-1"
-                        }, 
-                        {
-                         "name":"jitsiTrigger",
-                         "type":"string",
-                         "value":"onenter"
-                        }, 
-                        {
                          "name":"openWebsiteClosable",
-                         "type":"string",
-                         "value":"false"
+                         "type":"bool",
+                         "value":false
                         }, 
                         {
                          "name":"zoom_margin",
@@ -605,19 +595,9 @@
                          "value":true
                         }, 
                         {
-                         "name":"jitsiRoom",
-                         "type":"string",
-                         "value":"meeting-room-2"
-                        }, 
-                        {
-                         "name":"jitsiTrigger",
-                         "type":"string",
-                         "value":"onenter"
-                        }, 
-                        {
                          "name":"openWebsiteClosable",
-                         "type":"string",
-                         "value":"false"
+                         "type":"bool",
+                         "value":false
                         }, 
                         {
                          "name":"zoom_margin",
@@ -637,32 +617,7 @@
                  "name":"meeting-room-3",
                  "properties":[
                         {
-                         "name":"customScript",
-                         "type":"string",
-                         "value":"openJitsiModal()"
-                        }, 
-                        {
                          "name":"focusable",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"jitsiClosable",
-                         "type":"bool",
-                         "value":false
-                        }, 
-                        {
-                         "name":"jitsiRoom",
-                         "type":"string",
-                         "value":"meeting-room-3"
-                        }, 
-                        {
-                         "name":"onClick",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"onEnter",
                          "type":"bool",
                          "value":true
                         }, 
@@ -694,19 +649,9 @@
                          "value":true
                         }, 
                         {
-                         "name":"jitsiRoom",
-                         "type":"string",
-                         "value":"meeting-room-4"
-                        }, 
-                        {
-                         "name":"jitsiTrigger",
-                         "type":"string",
-                         "value":"onenter"
-                        }, 
-                        {
                          "name":"openWebsiteClosable",
-                         "type":"string",
-                         "value":"false"
+                         "type":"bool",
+                         "value":false
                         }, 
                         {
                          "name":"zoom_margin",
@@ -731,19 +676,9 @@
                          "value":true
                         }, 
                         {
-                         "name":"jitsiRoom",
-                         "type":"string",
-                         "value":"meeting-room-5"
-                        }, 
-                        {
-                         "name":"jitsiTrigger",
-                         "type":"string",
-                         "value":"onenter"
-                        }, 
-                        {
                          "name":"openWebsiteClosable",
-                         "type":"string",
-                         "value":"false"
+                         "type":"bool",
+                         "value":false
                         }, 
                         {
                          "name":"zoom_margin",
@@ -768,19 +703,9 @@
                          "value":true
                         }, 
                         {
-                         "name":"jitsiRoom",
-                         "type":"string",
-                         "value":"meeting-room-6"
-                        }, 
-                        {
-                         "name":"jitsiTrigger",
-                         "type":"string",
-                         "value":"onenter"
-                        }, 
-                        {
                          "name":"openWebsiteClosable",
-                         "type":"string",
-                         "value":"false"
+                         "type":"bool",
+                         "value":false
                         }, 
                         {
                          "name":"zoom_margin",
@@ -803,11 +728,6 @@
                          "name":"focusable",
                          "type":"bool",
                          "value":true
-                        }, 
-                        {
-                         "name":"room",
-                         "type":"string",
-                         "value":"conference-room"
                         }, 
                         {
                          "name":"zoom_margin",

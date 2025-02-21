@@ -43,7 +43,6 @@ WA.onInit().then(async () => {
             console.log("Open Jitsi Modal: ", currentArea)
 
             openJitsiModal(currentArea);
-            addJitsiDisconnectButton(currentArea);
         });
     }
 
@@ -60,14 +59,25 @@ function openJitsiModal(currentArea: String) {
         return;
     }
 
-
+    // Öffne Modal
     WA.ui.modal.openModal({
         title: `Konferenz ${currentArea}`,
         src: `https://jitsi.camedia.tools/${currentArea}`, // Jitsi-Raum ersetzen
         allow: 'camera; microphone; fullscreen; display-capture',
         allowApi: true,
-        position: 'right'
+        position: 'right',
+    }, () => {
+        console.log(`Modal für ${currentArea} wurde geschlossen.`);
+
+        // Entferne Disconnect-Button, wenn das Modal manuell geschlossen wurde
+        WA.ui.actionBar.removeButton(`disconnect-${currentArea}`);
+
+        // Optional: Connect-Button wieder hinzufügen
+        addJitsiConnectButton(currentArea);
     });
+
+    // Füge Disconnect Button hinzu
+    addJitsiDisconnectButton(currentArea);
 }
 
 
@@ -84,13 +94,6 @@ function addJitsiConnectButton(currentArea: String) {
 
             // Open Modal 
             openJitsiModal(currentArea)
-
-            // Remove button
-            WA.ui.actionBar.removeButton(button_id);
-
-            // Add Disconnect Button
-            addJitsiDisconnectButton(currentArea)
-
         }
     });
 
@@ -109,12 +112,6 @@ function addJitsiDisconnectButton(currentArea: String) {
 
             // Close Modal
             WA.ui.modal.closeModal();
-
-            // Remove Disconnect Button
-            WA.ui.actionBar.removeButton(button_id);
-
-            // Add Connect Button
-            addJitsiConnectButton(currentArea)
         }
     });
 
