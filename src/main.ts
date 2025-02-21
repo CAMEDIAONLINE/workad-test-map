@@ -71,7 +71,7 @@ WA.onInit().then(async () => {
             console.log("Aktuelle Aktive Area: ", currentActiveArea);
             console.log("OnEnterArea: ", currentArea.id);
 
-            if (currentActiveArea && currentActiveArea !== currentArea.id) {
+            if (!currentActiveArea || currentActiveArea !== currentArea.id) {
                 console.log("OnEnter - inside if");
 
 
