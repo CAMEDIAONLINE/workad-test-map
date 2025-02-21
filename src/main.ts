@@ -34,19 +34,17 @@ WA.onInit().then(async () => {
     }).catch(e => console.error(e));
 
 
-    for (let i = 0; i < areas.length; i++) {
-        const currentArea = areas[i];
-
+    for (const currentArea of areas) {
         // Event-Listener für automatisches Öffnen beim Betreten eines Bereichs    
-        WA.room.area.onEnter(currentArea).subscribe(() => {
+        WA.room.area.onEnter(currentArea).subscribe(async () => {
             console.log("Open Jitsi Modal: ", currentArea)
 
             // Falls bereits eine Konferenz offen ist -> erst schließen
             if (currentActiveArea) {
                 console.log(`Schließe vorherige Konferenz: ${currentActiveArea}`);
-                WA.ui.modal.closeModal(); // Altes Modal schließen
                 WA.ui.actionBar.removeButton(`disconnect-${currentActiveArea}`); // Alten Button entfernen
                 WA.ui.actionBar.removeButton(`connect-${currentActiveArea}`); // Alten Button entfernen
+                await WA.ui.modal.closeModal(); // Altes Modal schließen                
             }
 
             openJitsiModal(currentArea);
