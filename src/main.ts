@@ -66,7 +66,7 @@ WA.onInit().then(async () => {
             console.log("Open Jitsi Modal: ", currentArea)
 
             while (currentActiveArea && currentActiveArea === currentArea.id) {
-                //do nothing and wait
+                console.log("waiting until currentActiveArea is free: ", currentActiveArea);
             }
 
             // Die  Konferenz öffnen, sobald die alte geschlossen wurde
