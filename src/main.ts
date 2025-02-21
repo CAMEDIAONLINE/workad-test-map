@@ -70,6 +70,7 @@ WA.onInit().then(async () => {
 
             console.log("Aktuelle Aktive Area: ", currentActiveArea);
             console.log("OnEnterArea: ", currentArea.id);
+            console.log("isClosingModal: ", isClosingModal)
 
             if (!currentActiveArea || currentActiveArea !== currentArea.id) {
                 console.log("OnEnter - inside if");
