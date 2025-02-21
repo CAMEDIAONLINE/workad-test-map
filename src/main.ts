@@ -94,6 +94,9 @@ function addJitsiConnectButton(currentArea: String) {
 
             // Open Modal 
             openJitsiModal(currentArea)
+
+            // Entferne Disconnect-Button, wenn das Modal manuell geschlossen wurde
+            WA.ui.actionBar.removeButton(button_id);
         }
     });
 
