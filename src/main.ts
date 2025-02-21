@@ -65,23 +65,23 @@ WA.onInit().then(async () => {
         WA.room.area.onEnter(currentArea.id).subscribe(async () => {
             console.log("Open Jitsi Modal: ", currentArea)
 
-            // Falls bereits eine Konferenz offen ist -> erst schließen
-            if (currentActiveArea && currentActiveArea !== currentArea.id) {
-                console.log(`Schließe vorherige Konferenz: ${currentActiveArea}`);
-                WA.ui.actionBar.removeButton(`disconnect-${currentActiveArea}`); // Alten Button entfernen
-                WA.ui.actionBar.removeButton(`connect-${currentActiveArea}`); // Alten Button entfernen
-
-            } else {
-                // Direkt die neue Konferenz öffnen, wenn keine vorherige aktiv war
-                openJitsiModal(currentArea);
-                currentActiveArea = currentArea.id;
+            while (currentActiveArea && currentActiveArea === currentArea.id) {
+                //do nothing and wait
             }
 
+            // Die  Konferenz öffnen, sobald die alte geschlossen wurde
+            openJitsiModal(currentArea);
+            currentActiveArea = currentArea.id;
         });
 
         WA.room.area.onLeave(currentArea.id).subscribe(async () => {
+            console.log(`Schließe Konferenz bei verlassen: ${currentActiveArea}`);
             isClosingModal = true;
             WA.ui.modal.closeModal(); // Altes Modal schließen
+
+            WA.ui.actionBar.removeButton(`disconnect-${currentArea.id}`); // Alten Button entfernen
+            WA.ui.actionBar.removeButton(`connect-${currentArea.id}`); // Alten Button entfernen
+
 
             // Warte kurz (weil closeModal nicht asynchron ist), bevor das neue Modal geöffnet wird
             setTimeout(() => {
