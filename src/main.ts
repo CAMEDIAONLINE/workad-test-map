@@ -71,6 +71,7 @@ WA.onInit().then(async () => {
             console.log("Aktuelle Aktive Area: ", currentActiveArea);
             console.log("OnEnterArea: ", currentArea.id);
             console.log("isClosingModal: ", isClosingModal)
+            console.log("waitToEnterArea: ", waitToEnterArea)
 
             if (!currentActiveArea || currentActiveArea !== currentArea.id || isClosingModal === false) {
                 console.log("OnEnter - inside if");
@@ -88,8 +89,9 @@ WA.onInit().then(async () => {
             if (currentActiveArea && currentArea.id === currentActiveArea) {
                 console.log(`Schließe Konferenz bei verlassen: ${currentArea.id}`);
 
-                closeModal(currentArea.id)
+                closeModal(currentArea.id);
 
+                console.log("onleave - waitToEnterArea: ", waitToEnterArea)
                 if (waitToEnterArea) {
                     console.log("Process waitToEnterArea: ", waitToEnterArea.id)
                     openJitsiModal(waitToEnterArea)
@@ -195,16 +197,22 @@ async function addJitsiDisconnectButton(currentArea: TArea) {
 
 function closeModal(currentArea: string) {
     isClosingModal = true;
+    console.log("closeModal: Start")
     WA.ui.modal.closeModal(); // Altes Modal schließen
 
     WA.ui.actionBar.removeButton(`disconnect-${currentArea}`); // Alten Button entfernen
     WA.ui.actionBar.removeButton(`connect-${currentArea}`); // Alten Button entfernen
 
+
+
     // Warte kurz (weil closeModal nicht asynchron ist), bevor das neue Modal geöffnet wird
     setTimeout(() => {
         isClosingModal = false;
         currentActiveArea = null;
+        console.log("isClosing/currentActiveArea after closeModal timeout: ", isClosingModal, " - ", currentActiveArea)
     }, 300); // 300ms Wartezeit, kann bei Bedarf angepasst werden    
+
+    console.log("closeModal: End")
 }
 
 export { };
