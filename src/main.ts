@@ -2,8 +2,7 @@
 
 // Imports
 import {
-    bootstrapExtra,
-    Properties
+    bootstrapExtra
 } from "@workadventure/scripting-api-extra";
 
 // CONSTS & VARIABLES
