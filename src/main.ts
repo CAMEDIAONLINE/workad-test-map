@@ -17,7 +17,7 @@ const areas = [
 ]
 
 let currentActiveArea: string | null = null; // Speichert die aktuelle Area
-
+let isClosingModal: boolean = false; // Statusvariable für das Schließen
 
 console.log('Script started successfully');
 
@@ -44,13 +44,23 @@ WA.onInit().then(async () => {
                 console.log(`Schließe vorherige Konferenz: ${currentActiveArea}`);
                 WA.ui.actionBar.removeButton(`disconnect-${currentActiveArea}`); // Alten Button entfernen
                 WA.ui.actionBar.removeButton(`connect-${currentActiveArea}`); // Alten Button entfernen
-                await WA.ui.modal.closeModal(); // Altes Modal schließen                
+
+                isClosingModal = true;
+                WA.ui.modal.closeModal(); // Altes Modal schließen                
+
+                // Warte kurz (weil closeModal nicht asynchron ist), bevor das neue Modal geöffnet wird
+                setTimeout(() => {
+                    isClosingModal = false;
+                    openJitsiModal(currentArea);
+                    currentActiveArea = currentArea; // Jetzt erst setzen
+                }, 300); // 300ms Wartezeit, kann bei Bedarf angepasst werden
+
+            } else {
+                // Direkt die neue Konferenz öffnen, wenn keine vorherige aktiv war
+                openJitsiModal(currentArea);
+                currentActiveArea = currentArea;
             }
 
-            // Setze die aktuelle Area
-            currentActiveArea = currentArea;
-
-            await openJitsiModal(currentArea);
 
         });
     }
@@ -65,6 +75,12 @@ WA.onInit().then(async () => {
 async function openJitsiModal(currentArea: String) {
     if (!currentArea) {
         console.error("Kein Jitsi-Raumname vergeben!");
+        return;
+    }
+
+    // Falls gerade ein Modal geschlossen wird, brechen wir ab, um doppelte Öffnungen zu vermeiden
+    if (isClosingModal) {
+        console.warn("Verzögertes Öffnen von Modal abgebrochen, da noch ein Schließen aktiv ist.");
         return;
     }
 
@@ -125,7 +141,13 @@ async function addJitsiDisconnectButton(currentArea: String) {
             console.log(`disconnected from meeting: ${currentArea}`, event);
 
             // Close Modal
-            await WA.ui.modal.closeModal();
+            isClosingModal = true;
+            WA.ui.modal.closeModal();
+
+            // Warte kurz, bevor das Flag zurückgesetzt wird
+            setTimeout(() => {
+                isClosingModal = false;
+            }, 300);
 
             // Entferne Disconnect-Button, wenn das Modal manuell geschlossen wurde
             WA.ui.actionBar.removeButton(button_id);
