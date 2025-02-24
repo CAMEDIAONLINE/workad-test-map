@@ -100,7 +100,7 @@ async function OnLeaveArea(currentArea: TArea) {
     if (currentActiveArea && currentArea.id === currentActiveArea) {
         console.log("  - OLA Current Area:", currentArea.id);
 
-        if (!areaLeft | currentArea !== areaLeft) {
+        if (!areaLeft || currentArea.id !== areaLeft) {
             closeModal(currentArea.id);
         }
 
