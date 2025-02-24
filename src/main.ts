@@ -138,14 +138,8 @@ async function addJitsiDisconnectButton(currentArea: TArea) {
         callback: async (event) => {
             console.log(`disconnected from meeting: ${currentArea}`, event);
 
-            // Close Modal
-            isClosingModal = true;
+            // Close Modal            
             WA.ui.modal.closeModal();
-
-            // Warte kurz, bevor das Flag zurückgesetzt wird
-            setTimeout(() => {
-                isClosingModal = false;
-            }, 300);
 
             // Entferne Disconnect-Button, wenn das Modal manuell geschlossen wurde
             WA.ui.actionBar.removeButton(button_id);
