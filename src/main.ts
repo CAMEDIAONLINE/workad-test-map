@@ -101,7 +101,9 @@ async function openJitsiModal(currentArea: TArea) {
         allow: 'camera; microphone; fullscreen; display-capture',
         allowApi: true,
         position: 'right',
-    });
+    }), async () => {
+        console.log('  - OJM - Callback of openModal')
+    };
 
     // Füge Disconnect Button hinzu
     addJitsiDisconnectButton(currentArea);
