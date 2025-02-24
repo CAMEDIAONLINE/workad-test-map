@@ -78,14 +78,15 @@ async function OnEnterArea(currentArea: TArea) {
 
         console.log("  - OEA - Wait for lastArea to be closed")
         setTimeout(() => {
-            console.log("  - OEA - Wait timeout")
             lastArea = null
+            console.log("  - OEA - Wait timeout - Open: ", currentArea.id);
+            openJitsiModal(currentArea);
         }, 300);
 
+    } else {
+        console.log("  - OEA - Open currentArea: ", currentArea.id);
+        openJitsiModal(currentArea);
     }
-
-    console.log("  - OEA - Open currentArea: ", currentArea.id);
-    openJitsiModal(currentArea);
 }
 
 
