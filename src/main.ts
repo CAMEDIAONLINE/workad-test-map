@@ -42,7 +42,7 @@ const areas: TArea[] = [
     }
 ]
 
-let currentActiveArea: string | null = null; // Speichert die aktuelle Area
+let lastActiveArea: string | null = null; // Speichert die aktuelle Area
 let areaLeft: string | null = null;
 let waitToEnterArea: TArea | null = null;
 let isClosingModal: boolean = false; // Statusvariable für das Schließen
@@ -76,28 +76,28 @@ WA.onInit().then(async () => {
 
 async function OnEnterArea(currentArea: TArea) {
     waitToEnterArea = currentArea;
-    console.log("OnEnterArea: ")
-    console.log("  - OEA Current Active Area: ", currentActiveArea);
-    console.log("  - OEA Current Area: ", currentArea.id);
+    console.log("OnEnterArea: ", currentArea.id)
+    console.log("  - OEA Last Active: ", lastActiveArea);
     console.log("  - OEA isClosingModal: ", isClosingModal)
     console.log("  - OEA waitToEnterArea: ", waitToEnterArea)
 
-    if (!currentActiveArea || currentActiveArea !== currentArea.id || isClosingModal === false) {
-        console.log("OEA - inside if");
+    if (!lastActiveArea || lastActiveArea !== currentArea.id || isClosingModal === false) {
 
-        if (currentActiveArea)
-            closeModal(currentActiveArea)
+
+        if (lastActiveArea)
+            console.log("OEA - Close lastActiveAea");
+        closeModal(lastActiveArea)
 
 
         // Die  Konferenz öffnen
         openJitsiModal(currentArea);
-        currentActiveArea = currentArea.id;
+        lastActiveArea = currentArea.id;
     }
 }
 
 async function OnLeaveArea(currentArea: TArea) {
     console.log("OnLeaveArea: ")
-    if (currentActiveArea && currentArea.id === currentActiveArea) {
+    if (lastActiveArea && currentArea.id === lastActiveArea) {
         console.log("  - OLA Current Area:", currentArea.id);
 
         if (!areaLeft || currentArea.id !== areaLeft) {
@@ -117,7 +117,7 @@ async function OnLeaveArea(currentArea: TArea) {
 
 // Funktion zum Öffnen des modalen Jitsi-Fensters
 async function openJitsiModal(currentArea: TArea) {
-    console.log("Open Jitsi Modal: ")
+    console.log("Open Jitsi Modal: ", currentArea.id)
 
     if (!currentArea) {
         console.error("  OJM - Kein Jitsi-Raumname vergeben!");
@@ -126,9 +126,17 @@ async function openJitsiModal(currentArea: TArea) {
 
     // Falls gerade ein Modal geschlossen wird, brechen wir ab, um doppelte Öffnungen zu vermeiden
     if (isClosingModal) {
-        console.warn("  OJM - Verzögertes Öffnen von Modal abgebrochen, da noch ein Schließen aktiv ist.");
-        return;
+
+        // Warte kurz (weil closeModal nicht asynchron ist), bevor das neue Modal geöffnet wird
+        setTimeout(() => {
+            isClosingModal = false;
+            lastActiveArea = null;
+            console.log("  - OJM: Wait timeout after closeModal")
+        }, 300); // 300ms Wartezeit, kann bei Bedarf angepasst werden    
+
+
     }
+
 
     // Öffne Modal
     WA.ui.modal.openModal({
@@ -216,16 +224,7 @@ function closeModal(currentArea: string) {
     WA.ui.actionBar.removeButton(`disconnect-${currentArea}`); // Alten Button entfernen
     WA.ui.actionBar.removeButton(`connect-${currentArea}`); // Alten Button entfernen
 
-
-
-    // Warte kurz (weil closeModal nicht asynchron ist), bevor das neue Modal geöffnet wird
-    setTimeout(() => {
-        isClosingModal = false;
-        currentActiveArea = null;
-        areaLeft = currentArea
-        console.log("  - CM: isClosing/currentActiveArea after closeModal timeout: ", isClosingModal, " - ", currentActiveArea)
-    }, 300); // 300ms Wartezeit, kann bei Bedarf angepasst werden    
-
+    areaLeft = currentArea
 
     console.log("closeModal: End")
 }
