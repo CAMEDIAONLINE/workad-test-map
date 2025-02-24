@@ -69,6 +69,7 @@ WA.onInit().then(async () => {
 // FUNCTIONS
 
 async function OnEnterArea(currentArea: TArea) {
+    console.log("")
     console.log("OnEnterArea: ", currentArea.id)
 
     if (lastArea) {
@@ -103,6 +104,8 @@ async function openJitsiModal(currentArea: TArea) {
 
     // Füge Disconnect Button hinzu
     addJitsiDisconnectButton(currentArea);
+
+    lastArea = currentArea
 }
 
 
