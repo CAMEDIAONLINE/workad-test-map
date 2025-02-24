@@ -111,13 +111,12 @@ async function openJitsiModal(currentArea: TArea) {
     lastArea = currentArea
 }
 
-
 async function addJitsiConnectButton(currentArea: TArea) {
 
     // Add action bar button 'Join Meeting'.
     const button_id = `connect-${currentArea.id}`
 
-    await WA.ui.actionBar.addButton({
+    WA.ui.actionBar.addButton({
         id: button_id,
         label: `${currentArea.label} beitreten`,
         callback: async (event) => {
@@ -165,8 +164,30 @@ function closeModal(closeArea: TArea) {
     WA.ui.actionBar.removeButton(`disconnect-${closeArea.id}`); // Alten Button entfernen
     WA.ui.actionBar.removeButton(`connect-${closeArea.id}`); // Alten Button entfernen
 
-    console.log("  - CM: Close")
-    WA.ui.modal.closeModal(); // Altes Modal schließen
+
+
+    // Workaround: Jitsi über die API zum Verlassen zwingen
+    console.log("  - CM: Leave Jitsi")
+    WA.ui.modal.openModal({
+        title: "Jitsi verlassen...",
+        src: "about:blank", // Leere Seite erzwingt Jitsi-Trennung
+        allow: "",
+        position: "right",
+        allowApi: false
+    });
+
+    let wait = true
+    setTimeout(() => {
+        console.log("  - CM: Close")
+        WA.ui.modal.closeModal(); // Altes Modal schließen    
+        wait = false
+    }, 300)
+
+
+    while (wait) {
+        // do wait
+    }
+
 }
 
 export { };
