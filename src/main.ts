@@ -43,7 +43,8 @@ const areas: TArea[] = [
 ]
 
 let currentActiveArea: string | null = null; // Speichert die aktuelle Area
-let waitToEnterArea: TArea | null;
+let areaLeft: string | null = null;
+let waitToEnterArea: TArea | null = null;
 let isClosingModal: boolean = false; // Statusvariable für das Schließen
 
 
@@ -87,6 +88,7 @@ async function OnEnterArea(currentArea: TArea) {
         if (currentActiveArea)
             closeModal(currentActiveArea)
 
+
         // Die  Konferenz öffnen
         openJitsiModal(currentArea);
         currentActiveArea = currentArea.id;
@@ -98,13 +100,17 @@ async function OnLeaveArea(currentArea: TArea) {
     if (currentActiveArea && currentArea.id === currentActiveArea) {
         console.log("  - OLA Current Area:", currentArea.id);
 
-        closeModal(currentArea.id);
+        if (!areaLeft | currentArea !== areaLeft) {
+            closeModal(currentArea.id);
+        }
+
 
         console.log("  - OLA - waitToEnterArea: ", waitToEnterArea)
         if (waitToEnterArea) {
             console.log("  - OLA - Process waitToEnterArea: ", waitToEnterArea.id)
             openJitsiModal(waitToEnterArea)
         }
+        areaLeft = null
     }
 }
 
@@ -216,8 +222,10 @@ function closeModal(currentArea: string) {
     setTimeout(() => {
         isClosingModal = false;
         currentActiveArea = null;
+        areaLeft = currentArea
         console.log("  - CM: isClosing/currentActiveArea after closeModal timeout: ", isClosingModal, " - ", currentActiveArea)
     }, 300); // 300ms Wartezeit, kann bei Bedarf angepasst werden    
+
 
     console.log("closeModal: End")
 }
