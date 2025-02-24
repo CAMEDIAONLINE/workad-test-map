@@ -84,9 +84,11 @@ async function OnEnterArea(currentArea: TArea) {
     if (!lastActiveArea || lastActiveArea !== currentArea.id || isClosingModal === false) {
 
 
-        if (lastActiveArea)
+        if (lastActiveArea) {
             console.log("OEA - Close lastActiveAea");
-        closeModal(lastActiveArea)
+            closeModal(lastActiveArea)
+        }
+
 
 
         // Die  Konferenz öffnen
