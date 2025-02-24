@@ -49,8 +49,6 @@ let isClosingModal: boolean = false; // Statusvariable für das Schließen
 
 console.log('Script started successfully');
 
-
-
 // Waiting for the API to be ready
 WA.onInit().then(async () => {
     console.log('Scripting API ready');
@@ -61,43 +59,12 @@ WA.onInit().then(async () => {
         console.log('Scripting API Extra ready');
     }).catch(e => console.error(e));
 
-
     for (const currentArea of areas) {
         // Event-Listener für automatisches Öffnen beim Betreten eines Bereichs    
-        WA.room.area.onEnter(currentArea.id).subscribe(async () => {
+        WA.room.area.onEnter(currentArea.id).subscribe(async () => await OnEnterArea(currentArea));
 
-            waitToEnterArea = currentArea;
-
-            console.log("Aktuelle Aktive Area: ", currentActiveArea);
-            console.log("OnEnterArea: ", currentArea.id);
-            console.log("isClosingModal: ", isClosingModal)
-            console.log("waitToEnterArea: ", waitToEnterArea)
-
-            if (!currentActiveArea || currentActiveArea !== currentArea.id || isClosingModal === false) {
-                console.log("OnEnter - inside if");
-
-                if (currentActiveArea)
-                    closeModal(currentActiveArea)
-
-                // Die  Konferenz öffnen
-                openJitsiModal(currentArea);
-                currentActiveArea = currentArea.id;
-            }
-        });
-
-        WA.room.area.onLeave(currentArea.id).subscribe(async () => {
-            if (currentActiveArea && currentArea.id === currentActiveArea) {
-                console.log(`Schließe Konferenz bei verlassen: ${currentArea.id}`);
-
-                closeModal(currentArea.id);
-
-                console.log("onleave - waitToEnterArea: ", waitToEnterArea)
-                if (waitToEnterArea) {
-                    console.log("Process waitToEnterArea: ", waitToEnterArea.id)
-                    openJitsiModal(waitToEnterArea)
-                }
-            }
-        });
+        // Event-Listener für automatisches Schließen beim Verlassen eines Bereichs       
+        WA.room.area.onLeave(currentArea.id).subscribe(async () => await OnLeaveArea(currentArea));
     }
 
 
@@ -106,16 +73,54 @@ WA.onInit().then(async () => {
 
 // FUNCTIONS
 
+async function OnEnterArea(currentArea: TArea) {
+    waitToEnterArea = currentArea;
+    console.log("OnEnterArea: ")
+    console.log("  - OEA Current Active Area: ", currentActiveArea);
+    console.log("  - OEA Current Area: ", currentArea.id);
+    console.log("  - OEA isClosingModal: ", isClosingModal)
+    console.log("  - OEA waitToEnterArea: ", waitToEnterArea)
+
+    if (!currentActiveArea || currentActiveArea !== currentArea.id || isClosingModal === false) {
+        console.log("OEA - inside if");
+
+        if (currentActiveArea)
+            closeModal(currentActiveArea)
+
+        // Die  Konferenz öffnen
+        openJitsiModal(currentArea);
+        currentActiveArea = currentArea.id;
+    }
+}
+
+async function OnLeaveArea(currentArea: TArea) {
+    console.log("OnLeaveArea: ")
+    if (currentActiveArea && currentArea.id === currentActiveArea) {
+        console.log("  - OLA Current Area:", currentArea.id);
+
+        closeModal(currentArea.id);
+
+        console.log("  - OLA - waitToEnterArea: ", waitToEnterArea)
+        if (waitToEnterArea) {
+            console.log("  - OLA - Process waitToEnterArea: ", waitToEnterArea.id)
+            openJitsiModal(waitToEnterArea)
+        }
+    }
+}
+
+
 // Funktion zum Öffnen des modalen Jitsi-Fensters
 async function openJitsiModal(currentArea: TArea) {
+    console.log("Open Jitsi Modal: ")
+
     if (!currentArea) {
-        console.error("Kein Jitsi-Raumname vergeben!");
+        console.error("  OJM - Kein Jitsi-Raumname vergeben!");
         return;
     }
 
     // Falls gerade ein Modal geschlossen wird, brechen wir ab, um doppelte Öffnungen zu vermeiden
     if (isClosingModal) {
-        console.warn("Verzögertes Öffnen von Modal abgebrochen, da noch ein Schließen aktiv ist.");
+        console.warn("  OJM - Verzögertes Öffnen von Modal abgebrochen, da noch ein Schließen aktiv ist.");
         return;
     }
 
@@ -127,7 +132,7 @@ async function openJitsiModal(currentArea: TArea) {
         allowApi: true,
         position: 'right',
     }, async () => {
-        console.log(`Modal für ${currentArea.id} wurde geschlossen.`);
+        console.log(`  OJM - Modal für ${currentArea.id} wurde geschlossen.`);
 
         // Entferne Disconnect-Button, wenn das Modal manuell geschlossen wurde
         WA.ui.actionBar.removeButton(`disconnect-${currentArea.id}`);
@@ -140,6 +145,7 @@ async function openJitsiModal(currentArea: TArea) {
     addJitsiDisconnectButton(currentArea);
 
     waitToEnterArea = null;
+    console.log("  OJM - waitToEnterArea:", waitToEnterArea)
 }
 
 
@@ -196,8 +202,9 @@ async function addJitsiDisconnectButton(currentArea: TArea) {
 
 
 function closeModal(currentArea: string) {
-    isClosingModal = true;
     console.log("closeModal: Start")
+
+    isClosingModal = true;
     WA.ui.modal.closeModal(); // Altes Modal schließen
 
     WA.ui.actionBar.removeButton(`disconnect-${currentArea}`); // Alten Button entfernen
@@ -209,7 +216,7 @@ function closeModal(currentArea: string) {
     setTimeout(() => {
         isClosingModal = false;
         currentActiveArea = null;
-        console.log("isClosing/currentActiveArea after closeModal timeout: ", isClosingModal, " - ", currentActiveArea)
+        console.log("  - CM: isClosing/currentActiveArea after closeModal timeout: ", isClosingModal, " - ", currentActiveArea)
     }, 300); // 300ms Wartezeit, kann bei Bedarf angepasst werden    
 
     console.log("closeModal: End")
