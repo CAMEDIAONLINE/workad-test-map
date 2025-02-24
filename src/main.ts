@@ -77,28 +77,25 @@ WA.onInit().then(async () => {
 async function OnEnterArea(currentArea: TArea) {
     waitToEnterArea = currentArea;
     console.log("OnEnterArea: ", currentArea.id)
-    console.log("  - OEA Last Active: ", lastActiveArea);
-    console.log("  - OEA isClosingModal: ", isClosingModal)
-    console.log("  - OEA waitToEnterArea: ", waitToEnterArea)
 
     if (!lastActiveArea || lastActiveArea !== currentArea.id || isClosingModal === false) {
 
 
         if (lastActiveArea) {
-            console.log("OEA - Close lastActiveAea");
+            console.log("  - OEA - Close lastActiveArea: ", lastActiveArea);
             closeModal(lastActiveArea)
         }
 
 
-
         // Die  Konferenz öffnen
+        console.log("  - OEA - Open currenArea: ", currentArea.id);
         openJitsiModal(currentArea);
         lastActiveArea = currentArea.id;
     }
 }
 
 async function OnLeaveArea(currentArea: TArea) {
-    console.log("OnLeaveArea: ")
+    console.log("OnLeaveArea: ", currentArea.id)
     if (lastActiveArea && currentArea.id === lastActiveArea) {
         console.log("  - OLA Current Area:", currentArea.id);
 
@@ -113,6 +110,8 @@ async function OnLeaveArea(currentArea: TArea) {
             openJitsiModal(waitToEnterArea)
         }
         areaLeft = null
+    } else {
+        console.log("  - OLA - No Action")
     }
 }
 
@@ -134,34 +133,59 @@ async function openJitsiModal(currentArea: TArea) {
             isClosingModal = false;
             lastActiveArea = null;
             console.log("  - OJM: Wait timeout after closeModal")
+
+            // Öffne Modal
+            WA.ui.modal.openModal({
+                title: `Konferenz ${currentArea.label}`,
+                src: `https://jitsi.camedia.tools/${currentArea.id}`, // Jitsi-Raum ersetzen
+                allow: 'camera; microphone; fullscreen; display-capture',
+                allowApi: true,
+                position: 'right',
+            }, async () => {
+                console.log(`  OJM - Modal für ${currentArea.id} wurde geschlossen.`);
+
+                // Entferne Disconnect-Button, wenn das Modal manuell geschlossen wurde
+                WA.ui.actionBar.removeButton(`disconnect-${currentArea.id}`);
+
+                // Connect-Button wieder hinzufügen
+                addJitsiConnectButton(currentArea);
+            });
+
+            // Füge Disconnect Button hinzu
+            addJitsiDisconnectButton(currentArea);
+
+            waitToEnterArea = null;
+            console.log("  OJM - waitToEnterArea:", waitToEnterArea)
+
         }, 300); // 300ms Wartezeit, kann bei Bedarf angepasst werden    
 
 
+    } else {
+
+        // Öffne Modal
+        WA.ui.modal.openModal({
+            title: `Konferenz ${currentArea.label}`,
+            src: `https://jitsi.camedia.tools/${currentArea.id}`, // Jitsi-Raum ersetzen
+            allow: 'camera; microphone; fullscreen; display-capture',
+            allowApi: true,
+            position: 'right',
+        }, async () => {
+            console.log(`  OJM - Modal für ${currentArea.id} wurde geschlossen.`);
+
+            // Entferne Disconnect-Button, wenn das Modal manuell geschlossen wurde
+            WA.ui.actionBar.removeButton(`disconnect-${currentArea.id}`);
+
+            // Connect-Button wieder hinzufügen
+            addJitsiConnectButton(currentArea);
+        });
+
+        // Füge Disconnect Button hinzu
+        addJitsiDisconnectButton(currentArea);
+
+        waitToEnterArea = null;
+        console.log("  OJM - waitToEnterArea:", waitToEnterArea)
+
     }
-
-
-    // Öffne Modal
-    WA.ui.modal.openModal({
-        title: `Konferenz ${currentArea.label}`,
-        src: `https://jitsi.camedia.tools/${currentArea.id}`, // Jitsi-Raum ersetzen
-        allow: 'camera; microphone; fullscreen; display-capture',
-        allowApi: true,
-        position: 'right',
-    }, async () => {
-        console.log(`  OJM - Modal für ${currentArea.id} wurde geschlossen.`);
-
-        // Entferne Disconnect-Button, wenn das Modal manuell geschlossen wurde
-        WA.ui.actionBar.removeButton(`disconnect-${currentArea.id}`);
-
-        // Connect-Button wieder hinzufügen
-        addJitsiConnectButton(currentArea);
-    });
-
-    // Füge Disconnect Button hinzu
-    addJitsiDisconnectButton(currentArea);
-
-    waitToEnterArea = null;
-    console.log("  OJM - waitToEnterArea:", waitToEnterArea)
 }
 
 
@@ -218,7 +242,7 @@ async function addJitsiDisconnectButton(currentArea: TArea) {
 
 
 function closeModal(currentArea: string) {
-    console.log("closeModal: Start")
+    console.log("closeModal: ", currentArea)
 
     isClosingModal = true;
     WA.ui.modal.closeModal(); // Altes Modal schließen
@@ -228,7 +252,7 @@ function closeModal(currentArea: string) {
 
     areaLeft = currentArea
 
-    console.log("closeModal: End")
+    console.log("  - CM: End")
 }
 
 export { };
