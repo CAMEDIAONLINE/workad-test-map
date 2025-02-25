@@ -613,38 +613,6 @@
                 }, 
                 {
                  "height":224,
-                 "id":21,
-                 "name":"meeting-room-3-c",
-                 "properties":[
-                        {
-                         "name":"focusable",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"jitsiRoom",
-                         "type":"string",
-                         "value":"meeting-room-3"
-                        }, 
-                        {
-                         "name":"jitsiTrigger",
-                         "type":"string",
-                         "value":"onaction"
-                        }, 
-                        {
-                         "name":"zoom_margin",
-                         "type":"float",
-                         "value":1
-                        }],
-                 "rotation":0,
-                 "type":"area",
-                 "visible":true,
-                 "width":224,
-                 "x":32,
-                 "y":546
-                }, 
-                {
-                 "height":224,
                  "id":32,
                  "name":"meeting-room-3",
                  "properties":[
@@ -662,6 +630,38 @@
                          "name":"jitsiTrigger",
                          "type":"string",
                          "value":"onenter"
+                        }, 
+                        {
+                         "name":"zoom_margin",
+                         "type":"float",
+                         "value":1
+                        }],
+                 "rotation":0,
+                 "type":"area",
+                 "visible":true,
+                 "width":224,
+                 "x":32,
+                 "y":546
+                }, 
+                {
+                 "height":224,
+                 "id":21,
+                 "name":"meeting-room-3-c",
+                 "properties":[
+                        {
+                         "name":"focusable",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"jitsiRoom",
+                         "type":"string",
+                         "value":"meeting-room-3"
+                        }, 
+                        {
+                         "name":"jitsiTrigger",
+                         "type":"string",
+                         "value":"onaction"
                         }, 
                         {
                          "name":"zoom_margin",
