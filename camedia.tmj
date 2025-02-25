@@ -624,7 +624,7 @@
                         {
                          "name":"jitsiClosable",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }, 
                         {
                          "name":"openWebsiteClosable",
@@ -737,7 +737,7 @@
                         {
                          "name":"jitsiClosable",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }, 
                         {
                          "name":"zoom_margin",
