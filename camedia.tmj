@@ -622,6 +622,11 @@
                          "value":true
                         }, 
                         {
+                         "name":"jitsiClosable",
+                         "type":"bool",
+                         "value":false
+                        }, 
+                        {
                          "name":"openWebsiteClosable",
                          "type":"bool",
                          "value":false
@@ -728,6 +733,11 @@
                          "name":"focusable",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"jitsiClosable",
+                         "type":"bool",
+                         "value":false
                         }, 
                         {
                          "name":"zoom_margin",
