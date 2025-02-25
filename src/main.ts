@@ -73,22 +73,12 @@ async function OnEnterArea(currentArea: TArea) {
     console.log("OnEnterArea: ", currentArea.id)
 
     if (lastArea) {
-        console.log("  - OEA - Close lastArea: ", lastArea.id);
-        closeModal(lastArea)
-
-        console.log("  - OEA - Wait for lastArea to be closed")
-        setTimeout(() => {
-            lastArea = null
-            console.log("  - OEA - Wait timeout - Open: ", currentArea.id);
-            openJitsiModal(currentArea);
-        }, 300);
-
-    } else {
-        console.log("  - OEA - Open currentArea: ", currentArea.id);
-        openJitsiModal(currentArea);
+        WA.ui.actionBar.removeButton(`disconnect-${lastArea.id}`); // Alten Button entfernen
+        WA.ui.actionBar.removeButton(`connect-${lastArea.id}`); // Alten Button entfernen        
     }
-}
 
+    addJitsiConnectButton(currentArea)
+}
 
 // Funktion zum Öffnen des modalen Jitsi-Fensters
 async function openJitsiModal(currentArea: TArea) {
@@ -132,6 +122,7 @@ async function addJitsiConnectButton(currentArea: TArea) {
 
 }
 
+
 async function addJitsiDisconnectButton(currentArea: TArea) {
 
     // Add action bar button 'Join Meeting'.
@@ -157,38 +148,6 @@ async function addJitsiDisconnectButton(currentArea: TArea) {
 }
 
 
-function closeModal(closeArea: TArea) {
-    console.log("closeModal: ", closeArea.id)
-
-    console.log("  - CM: Remove Buttons")
-    WA.ui.actionBar.removeButton(`disconnect-${closeArea.id}`); // Alten Button entfernen
-    WA.ui.actionBar.removeButton(`connect-${closeArea.id}`); // Alten Button entfernen
-
-
-
-    // Workaround: Jitsi über die API zum Verlassen zwingen
-    console.log("  - CM: Leave Jitsi")
-    WA.ui.modal.openModal({
-        title: "Jitsi verlassen...",
-        src: "about:blank", // Leere Seite erzwingt Jitsi-Trennung
-        allow: "",
-        position: "right",
-        allowApi: false
-    });
-
-    let wait = true
-    setTimeout(() => {
-        console.log("  - CM: Close")
-        WA.ui.modal.closeModal(); // Altes Modal schließen    
-        wait = false
-    }, 300)
-
-
-    while (wait) {
-        // do wait
-    }
-
-}
 
 export { };
 
