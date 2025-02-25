@@ -42,8 +42,6 @@ const areas: TArea[] = [
     }
 ]
 
-let lastArea: TArea | null = null; // Speichert die letzte Area
-
 
 console.log('Script started successfully');
 
@@ -71,14 +69,10 @@ WA.onInit().then(async () => {
 async function OnEnterArea(currentArea: TArea) {
     console.log("")
     console.log("OnEnterArea: ", currentArea.id)
-
-    if (lastArea) {
-        WA.ui.actionBar.removeButton(`disconnect-${lastArea.id}`); // Alten Button entfernen
-        WA.ui.actionBar.removeButton(`connect-${lastArea.id}`); // Alten Button entfernen        
-    }
-
-    addJitsiConnectButton(currentArea)
+    console.log("  - OEA - Open currentArea: ", currentArea.id);
+    openJitsiModal(currentArea);
 }
+
 
 // Funktion zum Öffnen des modalen Jitsi-Fensters
 async function openJitsiModal(currentArea: TArea) {
@@ -97,8 +91,6 @@ async function openJitsiModal(currentArea: TArea) {
 
     // Füge Disconnect Button hinzu
     addJitsiDisconnectButton(currentArea);
-
-    lastArea = currentArea
 }
 
 async function addJitsiConnectButton(currentArea: TArea) {
@@ -121,7 +113,6 @@ async function addJitsiConnectButton(currentArea: TArea) {
     });
 
 }
-
 
 async function addJitsiDisconnectButton(currentArea: TArea) {
 
@@ -146,8 +137,6 @@ async function addJitsiDisconnectButton(currentArea: TArea) {
     });
 
 }
-
-
 
 export { };
 
