@@ -87,10 +87,11 @@ WA.onInit()
 // FUNCTIONS
 
 async function OnEnterArea(currentArea: TArea) {
-  console.log("");
-  console.log("OnEnterArea: ", currentArea.id);
-  console.log("  - OEA - Open currentArea: ", currentArea.id);
   lastArea = currentArea;
+
+  console.log("");
+  console.log("  - OEA - lastArea: ", lastArea);
+  console.log("  - OEA - Open currentArea: ", currentArea.id);
 
   // Entferne den aktuellen Button
   if (currentButtonId) WA.ui.actionBar.removeButton(currentButtonId);
