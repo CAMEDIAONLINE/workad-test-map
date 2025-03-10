@@ -3,43 +3,6 @@
 // Imports
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 
-type TArea = {
-  id: string;
-  label: string;
-};
-
-// CONSTS & VARIABLES
-const areas: TArea[] = [
-  {
-    id: "conference-room",
-    label: "CAMEDIA TEAM",
-  },
-  {
-    id: "meeting-room-1",
-    label: "Larry Page",
-  },
-  {
-    id: "meeting-room-2",
-    label: "Steve Jobs",
-  },
-  {
-    id: "meeting-room-3",
-    label: "Roger Moore",
-  },
-  {
-    id: "meeting-room-4",
-    label: "Jimmy Page",
-  },
-  {
-    id: "meeting-room-5",
-    label: "Bill Gates",
-  },
-  {
-    id: "meeting-room-6",
-    label: "Philipp Erich",
-  },
-];
-
 // Initialisierung des Pause-Modus
 let isPaused = false;
 const buttonId = "pause-button";
