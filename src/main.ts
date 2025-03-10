@@ -1,78 +1,154 @@
 /// <reference types="@workadventure/iframe-api-typings" />
+/// <reference path="./jitsi.d.ts" />
 
 // Imports
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 
-// Initialisierung des Pause-Modus
-let isPaused = false;
-const buttonId = "pause-button";
+// Jitsi IFrame API einbinden
+const JITSI_SCRIPT_URL = "https://meet.jit.si/external_api.js";
+
+type TArea = {
+  id: string;
+  label: string;
+};
+
+// CONSTS & VARIABLES
+const areas: TArea[] = [
+  { id: "conference-room", label: "CAMEDIA TEAM" },
+  { id: "meeting-room-1", label: "Larry Page" },
+  { id: "meeting-room-2", label: "Steve Jobs" },
+  { id: "meeting-room-3", label: "Roger Moore" },
+  { id: "meeting-room-4", label: "Jimmy Page" },
+  { id: "meeting-room-5", label: "Bill Gates" },
+  { id: "meeting-room-6", label: "Philipp Erich" },
+];
+
+// Jitsi API Instanz speichern
+let jitsiAPI: any = null;
 
 console.log("Script started successfully");
 
-// Waiting for the API to be ready
+// 📌 **Jitsi API Script dynamisch einbinden**
+function loadJitsiAPI(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${JITSI_SCRIPT_URL}"]`)) {
+      resolve();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = JITSI_SCRIPT_URL;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject("Jitsi API konnte nicht geladen werden.");
+    document.head.appendChild(script);
+  });
+}
+
+// 📌 **WorkAdventure Initialisierung**
 WA.onInit()
   .then(async () => {
     console.log("Scripting API ready");
 
-    // The line below bootstraps the Scripting API Extra library that
-    // adds a number of advanced properties/features to WorkAdventure
+    // Scripting API Extra laden
     bootstrapExtra()
       .then(() => {
         console.log("Scripting API Extra ready");
       })
       .catch((e) => console.error(e));
 
-    // Add Pause Button
-    addPauseButton();
+    // Jitsi API laden
+    await loadJitsiAPI();
+    console.log("Jitsi API geladen.");
+
+    // Event-Listener für betretene Bereiche setzen
+    for (const currentArea of areas) {
+      WA.room.area
+        .onEnter(currentArea.id)
+        .subscribe(async () => await OnEnterArea(currentArea));
+      WA.room.area
+        .onLeave(currentArea.id)
+        .subscribe(async () => await OnLeaveArea(currentArea));
+    }
   })
   .catch((e) => console.error(e));
 
-// FUNCTIONS
+// 📌 **Benutzer betritt einen Jitsi-Bereich**
+async function OnEnterArea(currentArea: TArea) {
+  console.log(`OnEnterArea: ${currentArea.id}`);
 
-function addPauseButton() {
-  // Falls ein Button mit der ID bereits existiert, zuerst entfernen
-  WA.ui.actionBar.removeButton(buttonId);
+  // Sicherstellen, dass kein veralteter Button existiert
+  WA.ui.actionBar.removeButton(`reconnect-${currentArea.id}`);
 
-  WA.ui.actionBar.addButton({
-    id: buttonId,
-    label: isPaused ? "Pause beenden" : "Pause starten",
-    callback: togglePauseMode,
+  // Jitsi wird durch WorkAdventure automatisch gestartet -> wir setzen nur das Event
+  setTimeout(() => {
+    initJitsiAPI(currentArea);
+  }, 2000); // Delay, um sicherzustellen, dass Jitsi geladen ist
+}
+
+// 📌 **Jitsi API Instanz überwachen**
+function initJitsiAPI(currentArea: TArea) {
+  if (!window.JitsiMeetExternalAPI) {
+    console.warn("JitsiMeetExternalAPI nicht verfügbar.");
+    return;
+  }
+
+  // Jitsi API Instanz erstellen
+  jitsiAPI = new window.JitsiMeetExternalAPI("jitsi.camedia.tools", {
+    roomName: currentArea.id,
+    width: 1,
+    height: 1,
+    parentNode: document.body,
+  });
+
+  // 📌 **Event: Teilnehmer verlässt Jitsi**
+  jitsiAPI.addEventListener("participantLeft", () => {
+    console.log(`User hat die Jitsi-Konferenz verlassen: ${currentArea.label}`);
+    addJitsiReconnectButton(currentArea);
+  });
+
+  // 📌 **Event: Teilnehmer betritt Jitsi (entfernt den Reconnect-Button)**
+  jitsiAPI.addEventListener("participantJoined", () => {
+    console.log(
+      `User hat die Jitsi-Konferenz erneut betreten: ${currentArea.label}`
+    );
+    WA.ui.actionBar.removeButton(`reconnect-${currentArea.id}`);
   });
 }
 
-function togglePauseMode() {
-  isPaused = !isPaused;
+// 📌 **Reconnect-Button hinzufügen**
+async function addJitsiReconnectButton(currentArea: TArea) {
+  const button_id = `reconnect-${currentArea.id}`;
 
-  if (isPaused) {
-    // Kamera & Mikrofon für sich selbst muten/unmuten
-    WA.controls.disableMicrophone();
-    WA.controls.disableWebcam();
-    console.log("Kamera & Mikrofon für sich selbst deaktiviert");
+  WA.ui.actionBar.addButton({
+    id: button_id,
+    label: `Erneut ${currentArea.label} beitreten`,
+    callback: async () => {
+      console.log(`Reconnect zu Jitsi: ${currentArea.label}`);
 
-    // Alle anderen Teilnehmer für den eigenen Client stumm/unmuten
-    document.querySelectorAll("audio").forEach((audio: HTMLAudioElement) => {
-      audio.muted = isPaused;
-    });
-    console.log("Audio für sich selbst deaktiviert");
-  } else {
-    // Kamera & Mikrofon für sich selbst muten/unmuten
-    WA.controls.restoreMicrophone();
-    WA.controls.restoreWebcam();
-    console.log("Kamera & Mikrofon für sich selbst aktiviert");
+      // Erneut mit Jitsi verbinden
+      if (window.JitsiMeetExternalAPI) {
+        jitsiAPI.executeCommand("start"); // Sollte die Verbindung erneut aufbauen
+      } else {
+        console.warn("JitsiMeetExternalAPI nicht verfügbar.");
+      }
 
-    // Alle anderen Teilnehmer für den eigenen Client stumm/unmuten
-    document.querySelectorAll("audio").forEach((audio: HTMLAudioElement) => {
-      audio.muted = isPaused;
-    });
-    console.log("Audio für sich selbst aktiviert");
-  }
-
-  // WA-Status setzen (geht aktuell nicht über die API)
-
-  // Button-Label aktualisieren
-  addPauseButton();
-
-  console.log(isPaused ? "Pause aktiviert" : "Pause beendet");
+      // Button entfernen, da Meeting wieder läuft
+      WA.ui.actionBar.removeButton(button_id);
+    },
+  });
 }
 
-export {};
+// 📌 **Benutzer verlässt einen Jitsi-Bereich**
+async function OnLeaveArea(currentArea: TArea) {
+  console.log(`OnLeaveArea: ${currentArea.id}`);
+
+  // Jitsi API beenden
+  if (jitsiAPI) {
+    jitsiAPI.dispose();
+    jitsiAPI = null;
+  }
+
+  // Reconnect-Button entfernen
+  WA.ui.actionBar.removeButton(`reconnect-${currentArea.id}`);
+}
