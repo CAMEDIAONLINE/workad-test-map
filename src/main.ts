@@ -43,14 +43,29 @@ function addPauseButton() {
 function togglePauseMode() {
   isPaused = !isPaused;
 
-  // Kamera & Mikrofon für sich selbst muten/unmuten
-  isPaused ? WA.controls.disableMicrophone() : WA.controls.restoreMicrophone();
-  isPaused ? WA.controls.disableWebcam() : WA.controls.restoreWebcam();
+  if (isPaused) {
+    // Kamera & Mikrofon für sich selbst muten/unmuten
+    WA.controls.disableMicrophone();
+    WA.controls.disableWebcam();
+    console.log("Kamera & Mikrofon für sich selbst deaktiviert");
 
-  // Alle anderen Teilnehmer für den eigenen Client stumm/unmuten
-  document.querySelectorAll("audio").forEach((audio: HTMLAudioElement) => {
-    audio.muted = isPaused;
-  });
+    // Alle anderen Teilnehmer für den eigenen Client stumm/unmuten
+    document.querySelectorAll("audio").forEach((audio: HTMLAudioElement) => {
+      audio.muted = isPaused;
+    });
+    console.log("Audio für sich selbst deaktiviert");
+  } else {
+    // Kamera & Mikrofon für sich selbst muten/unmuten
+    WA.controls.restoreMicrophone();
+    WA.controls.restoreWebcam();
+    console.log("Kamera & Mikrofon für sich selbst aktiviert");
+
+    // Alle anderen Teilnehmer für den eigenen Client stumm/unmuten
+    document.querySelectorAll("audio").forEach((audio: HTMLAudioElement) => {
+      audio.muted = isPaused;
+    });
+    console.log("Audio für sich selbst aktiviert");
+  }
 
   // WA-Status setzen (geht aktuell nicht über die API)
 
