@@ -6,7 +6,7 @@ import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 type TArea = {
   id: string;
   label: string;
-  teleport?: string;
+  teleport?: { x: number; y: number };
 };
 
 // CONSTS & VARIABLES
@@ -14,42 +14,42 @@ const areas: TArea[] = [
   {
     id: "conference-room",
     label: "CAMEDIA TEAM",
-    teleport: "#conference-room-entry",
+    teleport: { x: 390, y: 680 },
   },
   {
     id: "meeting-room-1",
     label: "Larry Page",
-    teleport: "#meeting-room-1-entry",
+    teleport: { x: 620, y: 1100 },
   },
   {
     id: "meeting-room-2",
     label: "Steve Jobs",
-    teleport: "#meeting-room-2-entry",
+    teleport: { x: 620, y: 1100 },
   },
   {
     id: "meeting-room-3",
     label: "Roger Moore",
-    teleport: "#meeting-room-3-entry",
+    teleport: { x: 620, y: 1100 },
   },
   {
     id: "meeting-room-4",
     label: "Jimmy Page",
-    teleport: "#meeting-room-4-entry",
+    teleport: { x: 620, y: 1100 },
   },
   {
     id: "meeting-room-5",
     label: "Bill Gates",
-    teleport: "#meeting-room-5-entry",
+    teleport: { x: 620, y: 1100 },
   },
   {
     id: "meeting-room-6",
     label: "Philipp Erich",
-    teleport: "#meeting-room-6-entry",
+    teleport: { x: 620, y: 1100 },
   },
   {
     id: "pause-room",
     label: "Pause",
-    teleport: "#pause-entry",
+    teleport: { x: 200, y: 130 },
   },
 ];
 
@@ -118,7 +118,7 @@ async function addTeleportButton(toArea: TArea) {
     label: `Zu ${toArea.label} teleportieren`,
     callback: async (event) => {
       console.log(`teleport to: ${toArea.label}`, event);
-      WA.nav.goToRoom(toArea.teleport!);
+      WA.player.teleport(toArea.teleport!.x, toArea.teleport!.y);
     },
   });
 }
