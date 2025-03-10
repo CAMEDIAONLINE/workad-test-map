@@ -6,7 +6,7 @@ import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 type TArea = {
   id: string;
   label: string;
-  teleport?: { x: number; y: number };
+  teleport: { x: number; y: number };
 };
 
 // CONSTS & VARIABLES
@@ -16,45 +16,11 @@ const areas: TArea[] = [
     label: "CAMEDIA TEAM",
     teleport: { x: 390, y: 680 },
   },
-  {
-    id: "meeting-room-1",
-    label: "Larry Page",
-    teleport: { x: 620, y: 1100 },
-  },
-  {
-    id: "meeting-room-2",
-    label: "Steve Jobs",
-    teleport: { x: 620, y: 1100 },
-  },
-  {
-    id: "meeting-room-3",
-    label: "Roger Moore",
-    teleport: { x: 620, y: 1100 },
-  },
-  {
-    id: "meeting-room-4",
-    label: "Jimmy Page",
-    teleport: { x: 620, y: 1100 },
-  },
-  {
-    id: "meeting-room-5",
-    label: "Bill Gates",
-    teleport: { x: 620, y: 1100 },
-  },
-  {
-    id: "meeting-room-6",
-    label: "Philipp Erich",
-    teleport: { x: 620, y: 1100 },
-  },
-  {
-    id: "pause-room",
-    label: "Pause",
-    teleport: { x: 200, y: 130 },
-  },
+  { id: "pause-room", label: "Pause", teleport: { x: 70, y: 900 } },
 ];
 
-let lastArea: TArea | null = null;
 let currentButtonId: string | null = null;
+let isPaused = false;
 
 console.log("Script started successfully");
 
@@ -63,64 +29,57 @@ WA.onInit()
   .then(async () => {
     console.log("Scripting API ready");
 
-    // The line below bootstraps the Scripting API Extra library that
-    // adds a number of advanced properties/features to WorkAdventure
     bootstrapExtra()
-      .then(() => {
-        console.log("Scripting API Extra ready");
-      })
+      .then(() => console.log("Scripting API Extra ready"))
       .catch((e) => console.error(e));
 
-    // Add action bar buttons
-    const conferenceArea = areas.find((a) => a.id === "conference-room");
-    if (conferenceArea) addTeleportButton(conferenceArea);
+    // Setze den Status basierend auf der Startposition
+    WA.room.area.onEnter("pause-room").subscribe(() => updatePauseState(true));
+    WA.room.area
+      .onEnter("conference-room")
+      .subscribe(() => updatePauseState(false));
 
-    for (const currentArea of areas) {
-      // Event-Listener für automatisches Öffnen beim Betreten eines Bereichs
-      WA.room.area
-        .onEnter(currentArea.id)
-        .subscribe(async () => await OnEnterArea(currentArea));
-    }
+    // Initialen Button setzen
+    updatePauseState(isPaused);
   })
   .catch((e) => console.error(e));
 
 // FUNCTIONS
 
-async function OnEnterArea(currentArea: TArea) {
-  lastArea = currentArea;
+function updatePauseState(paused: boolean) {
+  isPaused = paused;
+  setPauseButton();
+}
 
-  console.log("");
-  console.log("  - OEA - lastArea: ", lastArea);
-  console.log("  - OEA - Open currentArea: ", currentArea.id);
+function setPauseButton() {
+  if (currentButtonId) {
+    WA.ui.actionBar.removeButton(currentButtonId);
+  }
 
-  // Entferne den aktuellen Button
-  if (currentButtonId) WA.ui.actionBar.removeButton(currentButtonId);
+  const targetArea = isPaused
+    ? areas.find((a) => a.id === "conference-room")
+    : areas.find((a) => a.id === "pause-room");
 
-  if (currentArea.id === "pause-room") {
-    // Falls der Nutzer im Pause-Raum ist, Konferenzraum-Button wieder anzeigen
-    const conferenceArea = areas.find((a) => a.id === "conference-room");
-    if (conferenceArea) addTeleportButton(conferenceArea);
-  } else {
-    // Nutzer ist in einer Meeting-Area → Pause-Button anzeigen
-    const pauseArea = areas.find((a) => a.id === "pause-room");
-    if (pauseArea) addTeleportButton(pauseArea);
+  if (targetArea) {
+    const buttonId = `teleport-${targetArea.id}`;
+    currentButtonId = buttonId;
+
+    WA.ui.actionBar.addButton({
+      id: buttonId,
+      label: isPaused ? "Pause beenden" : "Pause starten",
+      callback: togglePauseMode,
+    });
   }
 }
 
-async function addTeleportButton(toArea: TArea) {
-  if (!toArea.teleport) return;
+function togglePauseMode() {
+  isPaused = !isPaused;
 
-  const buttonId = `teleport-${toArea.id}`;
-  currentButtonId = buttonId;
+  const targetArea = isPaused
+    ? areas.find((a) => a.id === "pause-room")
+    : areas.find((a) => a.id === "conference-room");
 
-  WA.ui.actionBar.addButton({
-    id: buttonId,
-    label: `Zu ${toArea.label} teleportieren`,
-    callback: async (event) => {
-      console.log(`teleport to: ${toArea.label}`, event);
-      WA.player.teleport(toArea.teleport!.x, toArea.teleport!.y);
-    },
-  });
+  if (targetArea) {
+    WA.player.teleport(targetArea.teleport.x, targetArea.teleport.y);
+  }
 }
-
-export {};
