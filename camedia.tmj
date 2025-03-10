@@ -255,7 +255,7 @@
                  "name":"specialZones",
                  "opacity":1,
                  "type":"tilelayer",
-                 "visible":true,
+                 "visible":false,
                  "width":40,
                  "x":0,
                  "y":0
@@ -619,6 +619,16 @@
                          "value":true
                         }, 
                         {
+                         "name":"jitsiRoom",
+                         "type":"string",
+                         "value":"meeting-room-1"
+                        }, 
+                        {
+                         "name":"jitsiTrigger",
+                         "type":"string",
+                         "value":"onenter"
+                        }, 
+                        {
                          "name":"openWebsiteClosable",
                          "type":"bool",
                          "value":false
@@ -644,6 +654,16 @@
                          "name":"focusable",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"jitsiRoom",
+                         "type":"string",
+                         "value":"meeting-room-2"
+                        }, 
+                        {
+                         "name":"jitsiTrigger",
+                         "type":"string",
+                         "value":"onenter"
                         }, 
                         {
                          "name":"openWebsiteClosable",
@@ -673,6 +693,16 @@
                          "value":true
                         }, 
                         {
+                         "name":"jitsiRoom",
+                         "type":"string",
+                         "value":"meeting-room-3"
+                        }, 
+                        {
+                         "name":"jitsiTrigger",
+                         "type":"string",
+                         "value":"onenter"
+                        }, 
+                        {
                          "name":"zoom_margin",
                          "type":"float",
                          "value":1
@@ -693,6 +723,16 @@
                          "name":"focusable",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"jitsiRoom",
+                         "type":"string",
+                         "value":"meeting-room-4"
+                        }, 
+                        {
+                         "name":"jitsiTrigger",
+                         "type":"string",
+                         "value":"onenter"
                         }, 
                         {
                          "name":"openWebsiteClosable",
@@ -722,6 +762,16 @@
                          "value":true
                         }, 
                         {
+                         "name":"jitsiRoom",
+                         "type":"string",
+                         "value":"meeting-room-5"
+                        }, 
+                        {
+                         "name":"jitsiTrigger",
+                         "type":"string",
+                         "value":"onenter"
+                        }, 
+                        {
                          "name":"openWebsiteClosable",
                          "type":"bool",
                          "value":false
@@ -749,6 +799,16 @@
                          "value":true
                         }, 
                         {
+                         "name":"jitsiRoom",
+                         "type":"string",
+                         "value":"meeting-room-6"
+                        }, 
+                        {
+                         "name":"jitsiTrigger",
+                         "type":"string",
+                         "value":"onenter"
+                        }, 
+                        {
                          "name":"openWebsiteClosable",
                          "type":"bool",
                          "value":false
@@ -774,6 +834,16 @@
                          "name":"focusable",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"jitsiRoom",
+                         "type":"string",
+                         "value":"conference-room"
+                        }, 
+                        {
+                         "name":"jitsiTrigger",
+                         "type":"string",
+                         "value":"onenter"
                         }, 
                         {
                          "name":"zoom_margin",
