@@ -945,6 +945,12 @@
                  "height":192,
                  "id":40,
                  "name":"pause-room",
+                 "properties":[
+                        {
+                         "name":"silent",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"area",
                  "visible":true,

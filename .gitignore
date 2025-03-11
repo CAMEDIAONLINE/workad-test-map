@@ -25,3 +25,4 @@ dist-ssr
 .env.secret
 dist.zip
 archive/
+office.tmj
