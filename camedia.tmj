@@ -932,7 +932,7 @@
                         {
                          "name":"zoom_margin",
                          "type":"float",
-                         "value":1
+                         "value":0.5
                         }],
                  "rotation":0,
                  "type":"area",
