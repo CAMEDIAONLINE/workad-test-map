@@ -14,9 +14,9 @@ const areas: TArea[] = [
   {
     id: "conference-room",
     label: "CAMEDIA TEAM",
-    teleport: { x: 390, y: 680 },
+    teleport: { x: 600, y: 750 },
   },
-  { id: "pause-room", label: "Pause", teleport: { x: 70, y: 900 } },
+  { id: "pause-room", label: "Pause", teleport: { x: 240, y: 976 } },
 ];
 
 let currentButtonId: string | null = null;
