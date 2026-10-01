@@ -36,7 +36,7 @@ jobs:
 
       - name: Extract UPLOAD_MODE from .env
         run: |
-          UPLOAD_MODE=$(grep '^[^#]*UPLOAD_MODE' .env | cut -d '=' -f2)
+          UPLOAD_MODE=$(grep '^[^#]*UPLOAD_MODE' .env | cut -d '=' -f2 | tr -d '\r')
           if [ -z "$UPLOAD_MODE" ]; then
             echo "Error: UPLOAD_MODE is not set in .env."
             exit 1
@@ -57,7 +57,7 @@ jobs:
           if [ -n "${{ secrets.MAP_STORAGE_URL }}" ]; then
             echo "MAP_STORAGE_URL=${{ secrets.MAP_STORAGE_URL }}" >> $GITHUB_ENV
           else
-            MAP_STORAGE_URL=$(grep '^[^#]*MAP_STORAGE_URL' .env | cut -d '=' -f2)
+            MAP_STORAGE_URL=$(grep '^[^#]*MAP_STORAGE_URL' .env | cut -d '=' -f2 | tr -d '\r')
             if [ -z "$MAP_STORAGE_URL" ]; then
               echo "Error: MAP_STORAGE_URL is not set in GitHub Secrets or .env."
               exit 1
@@ -69,7 +69,7 @@ jobs:
           if [ -n "${{ secrets.UPLOAD_DIRECTORY }}" ]; then
             echo "UPLOAD_DIRECTORY=${{ secrets.UPLOAD_DIRECTORY }}" >> $GITHUB_ENV
           else
-            UPLOAD_DIRECTORY=$(grep '^[^#]*UPLOAD_DIRECTORY' .env | cut -d '=' -f2)
+            UPLOAD_DIRECTORY=$(grep '^[^#]*UPLOAD_DIRECTORY' .env | cut -d '=' -f2 | tr -d '\r')
             if [ -n "$UPLOAD_DIRECTORY" ]; then
               echo "UPLOAD_DIRECTORY=$UPLOAD_DIRECTORY" >> $GITHUB_ENV
             else
