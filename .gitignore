@@ -26,3 +26,8 @@ dist-ssr
 dist.zip
 archive/
 office.tmj
+src/wa-env.env
+src/log.txt
+
+# Lokal Backups
+/#archiv/

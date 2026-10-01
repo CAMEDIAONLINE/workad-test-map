@@ -1,8 +1,16 @@
 /// <reference types="@workadventure/iframe-api-typings" />
 
-// Imports
+// Importiert eine zusätzliche Scripting-Bibliothek für WorkAdventure.
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 
+/**
+ * Definition eines Area-Typs:
+ * Repräsentiert einen Bereich, in dem ein Spieler (WOKA) gespawnt werden kann.
+ * - id: Eindeutige Kennung des Bereichs
+ * - label: Anzeigename
+ * - teleport: Die zentrale Teleport-Koordinate innerhalb dieses Bereichs
+ * - spawnStart & spawnEnd: Definieren das Rechteck (Bereich) von erlaubten Spawn-Koordinaten
+ */
 type TArea = {
   id: string;
   label: string;
@@ -11,7 +19,14 @@ type TArea = {
   spawnEnd: { x: number; y: number };
 };
 
-// CONSTS & VARIABLES
+// --- KONSTANTEN & VARIABLEN ---
+
+/**
+ * Liste vordefinierter Spawn-Bereiche:
+ * - conference-room: Der Hauptkonferenzraum
+ * - pause-room: Ein Ruhe-/Pausebereich
+ * Jeder Bereich hat definierte Grenzen für das Spawnen und einen Teleportpunkt.
+ */
 const areas: TArea[] = [
   {
     id: "conference-room",
@@ -29,15 +44,16 @@ const areas: TArea[] = [
   },
 ];
 
-const occupiedPositions: Set<string> = new Set();
-const TILE_SIZE = 32;
+const TILE_SIZE = 32; // Kachelgröße in Pixeln
 
-let currentButtonId: string | null = null;
-let isPaused = false;
+let currentButtonId: string | null = null; // Speichert aktuelle Button-ID für die Aktionsleiste
+let isPaused = false; // true = im Pausenbereich, false = im Konferenzbereich
+let lastPosition: string | null = null; // letzte belegte Position des Spielers
 
-console.log("Script started successfully");
+console.log("Script started successfully"); // Loggt den erfolgreichen Start
 
-// Waiting for the API to be ready
+// --- INITIALISIERUNG UND EVENT HANDLING ---
+
 WA.onInit()
   .then(async () => {
     console.log("Scripting API ready");
@@ -46,18 +62,16 @@ WA.onInit()
       .then(() => console.log("Scripting API Extra ready"))
       .catch((e) => console.error(e));
 
-    // Setze den Status basierend auf der Startposition
     WA.room.area.onEnter("pause-room").subscribe(() => updatePauseState(true));
     WA.room.area
       .onEnter("conference-room")
       .subscribe(() => updatePauseState(false));
 
-    // Initialen Button setzen
     updatePauseState(isPaused);
   })
   .catch((e) => console.error(e));
 
-// FUNCTIONS
+// --- FUNKTIONEN ---
 
 function updatePauseState(paused: boolean) {
   isPaused = paused;
@@ -80,39 +94,52 @@ function setPauseButton() {
     WA.ui.actionBar.addButton({
       id: buttonId,
       label: isPaused ? "Pause beenden" : "Pause starten",
-      callback: togglePauseMode,
+      callback: () => togglePauseMode(targetArea),
     });
   }
 }
 
-function togglePauseMode() {
+function togglePauseMode(targetArea: TArea) {
   isPaused = !isPaused;
-
-  const targetArea = isPaused
-    ? areas.find((a) => a.id === "pause-room")
-    : areas.find((a) => a.id === "conference-room");
-
-  if (targetArea) {
-    teleportPlayer(targetArea);
-    // WA.player.teleport(targetArea.teleport.x, targetArea.teleport.y);
-  }
+  teleportPlayer(targetArea);
 }
 
-function teleportPlayer(targetArea: TArea) {
-  const spawnPoint = getAvailableSpawnPoint(targetArea);
+async function teleportPlayer(targetArea: TArea) {
+  const spawnPoint = await getAvailableSpawnPoint(targetArea);
   if (spawnPoint) {
-    occupiedPositions.add(`${spawnPoint.x},${spawnPoint.y}`);
+    const raw = await WA.state.loadVariable("occupiedPositions");
+    const occupied = new Set<string>(
+      typeof raw === "string" ? JSON.parse(raw) : []
+    );
+
+    if (lastPosition) {
+      occupied.delete(lastPosition);
+    }
+
+    lastPosition = `${spawnPoint.x},${spawnPoint.y}`;
+    occupied.add(lastPosition);
+    await WA.state.saveVariable(
+      "occupiedPositions",
+      JSON.stringify([...occupied])
+    );
+
     WA.player.teleport(spawnPoint.x, spawnPoint.y);
   }
 }
 
-function getAvailableSpawnPoint(area: TArea) {
+async function getAvailableSpawnPoint(area: TArea) {
+  const raw = await WA.state.loadVariable("occupiedPositions");
+  const occupied = new Set<string>(
+    typeof raw === "string" ? JSON.parse(raw) : []
+  );
+
   const { spawnStart, spawnEnd } = area;
   const possiblePositions: { x: number; y: number }[] = [];
 
   for (let x = spawnStart.x; x <= spawnEnd.x; x += TILE_SIZE) {
     for (let y = spawnStart.y; y <= spawnEnd.y; y += TILE_SIZE) {
-      if (!occupiedPositions.has(`${x},${y}`)) {
+      const key = `${x},${y}`;
+      if (!occupied.has(key)) {
         possiblePositions.push({ x, y });
       }
     }
